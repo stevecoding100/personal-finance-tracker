@@ -7,6 +7,7 @@ export interface User {
     created_at: Date;
     updated_at: Date;
 }
+
 export const createUser = async (
     userData: Omit<User, "id" | "created_at" | "updated_at">
 ) => {
@@ -23,6 +24,7 @@ export const createUser = async (
         throw new Error(`Error creating user: ${error.message}`);
     }
 };
+
 export const getUserById = async (id: number) => {
     try {
         const user = await db<User>("users").where("id", id).first();
