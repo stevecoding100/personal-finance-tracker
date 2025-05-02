@@ -5,9 +5,8 @@
     "scripts": {
         "dev": "ts-node src/server.ts",
         "start": "tsc && node dist/server.js",
-        "migrate": "ts-node -r tsconfig-paths/register ./node_modules/knex/bin/cli.js --knexfile knexfile.ts migrate:latest",
+        "migrate": "ts-node -r tsconfig-paths/register ./src/knexfile.ts migrate:latest",
         "rollback": "ts-node -r tsconfig-paths/register ./node_modules/knex/bin/cli.js --knexfile knexfile.ts migrate:rollback"
-
     },
     "keywords": [],
     "author": "",

@@ -14,7 +14,7 @@ export const config = {
         database: process.env.DB_NAME!,
     },
     jwt: {
-        secret: process.env.JWT_SECRET!,
-        expiresIn: "7d",
+        secret: process.env.JWT_SECRET! as string,
+        expiresIn: "7d" as const,
     },
 };

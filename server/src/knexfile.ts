@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import { config } from "./src/config/config";
+import { config } from "./config/config";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,6 +19,5 @@ const knexConfig: { [key: string]: Knex.Config } = {
         },
     },
 };
-
 export default knexConfig;
 module.exports = knexConfig; // Needed for CLI
