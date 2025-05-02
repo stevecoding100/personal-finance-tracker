@@ -61,6 +61,17 @@ personal-finance-tracker/
 - Docker & Docker Compose
 - PostgreSQL (optional if using Docker)
 
+
+## Frontend Setup
+
+cd frontend
+npm install
+npm run dev
+
+## With Docker
+docker-compose up --build
+
+
 ### Backend Setup
 
 ```bash
@@ -69,41 +80,3 @@ npm install
 # Setup .env with DB credentials
 npx knex migrate:latest
 npm run dev
-
-### Frontend Setup
-
-
-cd frontend
-npm install
-npm run dev
-
-
-### With Docker
-docker-compose up --build
-
-#Roadmap
-
-
- Auth flow (login/signup)
-
- Transaction CRUD
-
- Budgeting System
-
- Saving Goals Module
-
- Monthly Dashboard & Charts
-
- Test Coverage (Backend & Frontend)
-
- Dockerize & Deploy
-
- #Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss your idea.
-Ensure tests pass and code is linted.
-
-License
-MIT License © 2025 Steve De La Rosa
-
-
