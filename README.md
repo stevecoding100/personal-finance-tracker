@@ -68,7 +68,7 @@ personal-finance-tracker/
 
 ## Frontend Setup
 
--   cd frontend
+-   cd client
 -   npm install
 -   npm run dev
 
@@ -79,7 +79,7 @@ personal-finance-tracker/
 ### Backend Setup
 
 ```bash
-cd backend
+cd server
 npm install
 # Setup .env with DB credentials
 npx knex migrate:latest
