@@ -41,7 +41,7 @@ A full-stack personal finance tracker that helps users manage their income, expe
 ---
 
 ## 📁 Folder Structure
-
+```bash
 personal-finance-tracker/
 ├── backend/
 │ ├── src/ # App logic (controllers, routes, models)
@@ -50,7 +50,7 @@ personal-finance-tracker/
 │ ├── src/ # Components, pages, Redux features
 │ └── tests/ # Frontend tests
 └── docker-compose.yml
-
+```
 
 ---
 
