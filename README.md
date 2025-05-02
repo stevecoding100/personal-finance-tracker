@@ -64,12 +64,12 @@ personal-finance-tracker/
 
 ## Frontend Setup
 
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- npm run dev
 
 ## With Docker
-docker-compose up --build
+- docker-compose up --build
 
 
 ### Backend Setup
