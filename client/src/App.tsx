@@ -1,22 +1,19 @@
 // src/App.tsx
 
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import { Provider } from "react-redux";
-import { store } from "./features/store";
+import { Routes, Route } from "react-router-dom";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+// import { Dashboard } from "./pages/Dashboard";
+// import { Profile } from "./pages/Profile";
 
 const App: React.FC = () => {
     return (
-        <Provider store={store}>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    {/* <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} /> */}
-                </Routes>
-            </Router>
-        </Provider>
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            {/* <Route path="/profile" element={<Profile />} /> */}
+        </Routes>
     );
 };
 
