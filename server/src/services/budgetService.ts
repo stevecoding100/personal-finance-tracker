@@ -1,25 +1,25 @@
-import { db } from "../db/db";
+import * as budgetModel from "../models/budgetModel";
+import { Budget } from "../models/budgetModel";
 
-interface Budget {
-    id?: number;
-    user_id: number;
-    category: string;
-    amount: number;
-    month: string; // e.g. "2025-05"
-    created_at?: Date;
-    updated_at?: Date;
-}
 export const createBudget = async (budgetData: Budget) => {
-    const [budget] = await db<Budget>("budgets")
-        .insert({
-            ...budgetData,
-            created_at: new Date(),
-            updated_at: new Date(),
-        })
-        .returning("*");
-    return budget;
+    return await budgetModel.createBudget(budgetData);
 };
 
 export const getBudgetsByUser = async (userId: number) => {
-    return db<Budget>("budgets").where({ user_id: userId });
+    return await budgetModel.getBudgetsByUser(userId);
+};
+
+export const getBudgetById = async (id: number) => {
+    return await budgetModel.getBudgetById(id);
+};
+
+export const updateBudget = async (
+    id: number,
+    updates: Partial<Omit<Budget, "id" | "user_id" | "created_at">>
+) => {
+    return await budgetModel.updateBudget(id, updates);
+};
+
+export const deleteBudget = async (id: number) => {
+    return await budgetModel.deleteBudget(id);
 };
