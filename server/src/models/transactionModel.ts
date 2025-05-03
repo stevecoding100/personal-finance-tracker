@@ -1,26 +1,25 @@
+import { error } from "console";
 import { db } from "../db/db";
 
 export interface Transaction {
     id: number;
     user_id: number;
     amount: number;
-    description: string;
+    type: string; // 'income' or 'expense'
     category: string;
+    description?: string;
+    date: Date;
     created_at: Date;
     updated_at: Date;
 }
 
 // Create a transaction
 export const createTransaction = async (
-    transactionData: Omit<Transaction, "id" | "created_at" | "updated_at">
+    transactionData: Omit<Transaction, "id">
 ) => {
     try {
         const newTransaction = await db<Transaction>("transactions")
-            .insert({
-                ...transactionData,
-                created_at: new Date(),
-                updated_at: new Date(),
-            })
+            .insert(transactionData)
             .returning("*");
         return newTransaction[0];
     } catch (error: any) {
@@ -41,6 +40,22 @@ export const getTransactionsByUserId = async (userId: number) => {
     }
 };
 
+// Get transaction by Id
+export const getTransactionById = async (id: number) => {
+    try {
+        if (!id) {
+            throw new Error("No transaction found");
+        }
+        const transactions = await db<Transaction>("transactions").where(
+            "id",
+            id
+        );
+        return transactions;
+    } catch (error: any) {
+        throw new Error(`Error fetching transactions: ${error.message}`);
+    }
+};
+
 // Update a transaction
 export const updateTransaction = async (
     id: number,
@@ -49,7 +64,7 @@ export const updateTransaction = async (
     try {
         const updatedTransaction = await db<Transaction>("transactions")
             .where("id", id)
-            .update({ ...transactionData, updated_at: new Date() })
+            .update(transactionData)
             .returning("*");
         return updatedTransaction[0];
     } catch (error: any) {

@@ -30,6 +30,20 @@ export const getTransactionsController = async (
     }
 };
 
+export const getTransactionController = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const transactions = await transactionModel.getTransactionById(
+            Number(req.params.id)
+        );
+        res.status(200).json(transactions);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 export const updateTransactionController = async (
     req: Request,
     res: Response

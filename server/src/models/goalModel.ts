@@ -5,24 +5,14 @@ export interface Goal {
     user_id: number;
     target_amount: number;
     current_amount: number;
-    description: string;
-    due_date: Date;
-    created_at: Date;
-    updated_at: Date;
+    title: string;
+    target_date: Date;
 }
 
 // Create a goal
-export const createGoal = async (
-    goalData: Omit<Goal, "id" | "created_at" | "updated_at">
-) => {
+export const createGoal = async (goalData: Omit<Goal, "id">) => {
     try {
-        const newGoal = await db<Goal>("goals")
-            .insert({
-                ...goalData,
-                created_at: new Date(),
-                updated_at: new Date(),
-            })
-            .returning("*");
+        const newGoal = await db<Goal>("goals").insert(goalData).returning("*");
         return newGoal[0];
     } catch (error: any) {
         throw new Error(`Error creating goal: ${error.message}`);
@@ -39,12 +29,25 @@ export const getGoalsByUserId = async (userId: number) => {
     }
 };
 
+// Get a single goal
+export const getGoalById = async (id: number) => {
+    try {
+        const goal = await db<Goal>("goals").where("id", id).first();
+        if (!goal) {
+            throw new Error("No goal found");
+        }
+        return goal;
+    } catch (error: any) {
+        throw new Error(`Error fetching goal: ${error.message}`);
+    }
+};
+
 // Update a goal
 export const updateGoal = async (id: number, goalData: Partial<Goal>) => {
     try {
         const updatedGoal = await db<Goal>("goals")
             .where("id", id)
-            .update({ ...goalData, updated_at: new Date() })
+            .update(goalData)
             .returning("*");
         return updatedGoal[0];
     } catch (error: any) {

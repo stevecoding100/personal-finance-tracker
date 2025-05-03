@@ -25,6 +25,9 @@ export const createGoal = async (goalData: Goal) => {
 export const getGoalsByUser = async (userId: number) => {
     return db<Goal>("goals").where({ user_id: userId });
 };
+export const getGoalById = async (id: number) => {
+    return db<Goal>("goals").where({ id: id });
+};
 
 export const updateGoalAmount = async (goalId: number, amount: number) => {
     const [goal] = await db<Goal>("goals")

@@ -1,7 +1,8 @@
-import type { Knex } from "knex";
-import { config } from "./config/config";
 import dotenv from "dotenv";
 dotenv.config();
+
+import type { Knex } from "knex";
+import { config } from "./config/config";
 
 const knexConfig: { [key: string]: Knex.Config } = {
     development: {
@@ -14,10 +15,13 @@ const knexConfig: { [key: string]: Knex.Config } = {
             database: config.db.database,
         },
         migrations: {
-            directory: "./src/db/migrations",
+            directory: "./db/migrations",
             extension: "ts",
         },
     },
 };
+
 export default knexConfig;
-module.exports = knexConfig; // Needed for CLI
+module.exports = knexConfig; // For CLI
+
+// DB_NAME=personal_finance npx knex migrate:latest --knexfile src/knexfile.ts

@@ -1,16 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTransaction = exports.updateTransaction = exports.getTransactionsByUserId = exports.createTransaction = void 0;
+exports.deleteTransaction = exports.updateTransaction = exports.getTransactionById = exports.getTransactionsByUserId = exports.createTransaction = void 0;
 const db_1 = require("../db/db");
 // Create a transaction
 const createTransaction = async (transactionData) => {
     try {
         const newTransaction = await (0, db_1.db)("transactions")
-            .insert({
-            ...transactionData,
-            created_at: new Date(),
-            updated_at: new Date(),
-        })
+            .insert(transactionData)
             .returning("*");
         return newTransaction[0];
     }
@@ -30,12 +26,26 @@ const getTransactionsByUserId = async (userId) => {
     }
 };
 exports.getTransactionsByUserId = getTransactionsByUserId;
+// Get transaction by Id
+const getTransactionById = async (id) => {
+    try {
+        if (!id) {
+            throw new Error("No transaction found");
+        }
+        const transactions = await (0, db_1.db)("transactions").where("id", id);
+        return transactions;
+    }
+    catch (error) {
+        throw new Error(`Error fetching transactions: ${error.message}`);
+    }
+};
+exports.getTransactionById = getTransactionById;
 // Update a transaction
 const updateTransaction = async (id, transactionData) => {
     try {
         const updatedTransaction = await (0, db_1.db)("transactions")
             .where("id", id)
-            .update({ ...transactionData, updated_at: new Date() })
+            .update(transactionData)
             .returning("*");
         return updatedTransaction[0];
     }

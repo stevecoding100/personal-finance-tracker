@@ -1,17 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteGoal = exports.updateGoal = exports.getGoalsByUserId = exports.createGoal = void 0;
+exports.deleteGoal = exports.updateGoal = exports.getGoalById = exports.getGoalsByUserId = exports.createGoal = void 0;
 const db_1 = require("../db/db");
 // Create a goal
 const createGoal = async (goalData) => {
     try {
-        const newGoal = await (0, db_1.db)("goals")
-            .insert({
-            ...goalData,
-            created_at: new Date(),
-            updated_at: new Date(),
-        })
-            .returning("*");
+        const newGoal = await (0, db_1.db)("goals").insert(goalData).returning("*");
         return newGoal[0];
     }
     catch (error) {
@@ -30,12 +24,26 @@ const getGoalsByUserId = async (userId) => {
     }
 };
 exports.getGoalsByUserId = getGoalsByUserId;
+// Get a single goal
+const getGoalById = async (id) => {
+    try {
+        const goal = await (0, db_1.db)("goals").where("id", id).first();
+        if (!goal) {
+            throw new Error("No goal found");
+        }
+        return goal;
+    }
+    catch (error) {
+        throw new Error(`Error fetching goal: ${error.message}`);
+    }
+};
+exports.getGoalById = getGoalById;
 // Update a goal
 const updateGoal = async (id, goalData) => {
     try {
         const updatedGoal = await (0, db_1.db)("goals")
             .where("id", id)
-            .update({ ...goalData, updated_at: new Date() })
+            .update(goalData)
             .returning("*");
         return updatedGoal[0];
     }

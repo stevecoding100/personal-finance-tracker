@@ -15,7 +15,9 @@ const registerUser = async (name, email, password) => {
     const hashedPassword = await bcryptjs_1.default.hash(password, 10);
     const user = await (0, userModel_1.createUser)({ name, email, password: hashedPassword });
     const token = (0, jwt_1.createToken)({ id: user.id, email: user.email });
-    return { user, token };
+    // Remove password before returning
+    const { password: _pw, ...safeUser } = user;
+    return { user: safeUser, token };
 };
 exports.registerUser = registerUser;
 const loginUser = async (email, password) => {
@@ -28,14 +30,18 @@ const loginUser = async (email, password) => {
         throw new Error("Invalid email or password");
     }
     const token = (0, jwt_1.createToken)({ id: user.id, email: user.email });
-    return { user, token };
+    // Remove password before returning
+    const { password: _pw, ...safeUser } = user;
+    return { user: safeUser, token };
 };
 exports.loginUser = loginUser;
-const getUser = async (id) => {
-    const user = await (0, userModel_1.getUserById)(id);
+const getUser = async (userId) => {
+    const user = await (0, userModel_1.getUserById)(userId);
     if (!user) {
         throw new Error("Cannot find user");
     }
-    return user;
+    // Remove password before returning
+    const { id, name, email } = user;
+    return { id, name, email };
 };
 exports.getUser = getUser;

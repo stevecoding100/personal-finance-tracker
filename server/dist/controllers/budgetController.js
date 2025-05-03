@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBudgetsController = exports.createBudgetController = void 0;
+exports.deleteBudgetController = exports.updateBudgetController = exports.getBudgetsController = exports.createBudgetController = void 0;
 const budgetService = __importStar(require("../services/budgetService"));
 const createBudgetController = async (req, res) => {
     try {
@@ -58,3 +58,23 @@ const getBudgetsController = async (req, res) => {
     }
 };
 exports.getBudgetsController = getBudgetsController;
+const updateBudgetController = async (req, res) => {
+    try {
+        const updatedBudget = await budgetService.updateBudget(Number(req.params.id), req.body);
+        res.status(200).json(updatedBudget);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+exports.updateBudgetController = updateBudgetController;
+const deleteBudgetController = async (req, res) => {
+    try {
+        await budgetService.deleteBudget(Number(req.params.id));
+        res.status(200).json({ message: "Budget deleted successfully" });
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+exports.deleteBudgetController = deleteBudgetController;

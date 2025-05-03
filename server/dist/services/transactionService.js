@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMonthlySummary = exports.getTransactionsByUser = exports.addTransaction = void 0;
+exports.getMonthlySummary = exports.getTransactionById = exports.getTransactionsByUser = exports.addTransaction = void 0;
 const db_1 = require("../db/db");
 const addTransaction = async (transactionData) => {
     const [transaction] = await (0, db_1.db)("transactions")
@@ -19,6 +19,12 @@ const getTransactionsByUser = async (userId) => {
         .orderBy("date", "desc");
 };
 exports.getTransactionsByUser = getTransactionsByUser;
+const getTransactionById = async (id) => {
+    return (0, db_1.db)("transactions")
+        .where({ id: id })
+        .orderBy("date", "desc");
+};
+exports.getTransactionById = getTransactionById;
 const getMonthlySummary = async (userId, month) => {
     return (0, db_1.db)("transactions")
         .select("type")

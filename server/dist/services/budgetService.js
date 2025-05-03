@@ -35,22 +35,27 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBudget = exports.updateBudget = exports.getBudgetById = exports.getBudgetsByUser = exports.createBudget = void 0;
 const budgetModel = __importStar(require("../models/budgetModel"));
+// Create a new budget
 const createBudget = async (budgetData) => {
     return await budgetModel.createBudget(budgetData);
 };
 exports.createBudget = createBudget;
+// Get all budgets for a user
 const getBudgetsByUser = async (userId) => {
     return await budgetModel.getBudgetsByUser(userId);
 };
 exports.getBudgetsByUser = getBudgetsByUser;
+// Get a single budget by ID (optional if used in future)
 const getBudgetById = async (id) => {
     return await budgetModel.getBudgetById(id);
 };
 exports.getBudgetById = getBudgetById;
+// Update a budget
 const updateBudget = async (id, updates) => {
     return await budgetModel.updateBudget(id, updates);
 };
 exports.updateBudget = updateBudget;
+// Delete a budget
 const deleteBudget = async (id) => {
     return await budgetModel.deleteBudget(id);
 };

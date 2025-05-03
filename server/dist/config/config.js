@@ -8,8 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.config = {
     app: {
-        port: process.env.PORT || 5000,
-        nodeEnv: process.env.NODE_ENV || "development",
+        port: process.env.PORT,
+        nodeEnv: process.env.NODE_ENV,
     },
     db: {
         host: process.env.DB_HOST,

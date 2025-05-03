@@ -27,7 +27,17 @@ export const getGoalsController = async (
         res.status(500).json({ error: err.message });
     }
 };
-
+export const getGoalController = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        const goal = await goalModel.getGoalById(Number(req.params.id));
+        res.status(200).json(goal);
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
+    }
+};
 export const updateGoalController = async (
     req: Request,
     res: Response

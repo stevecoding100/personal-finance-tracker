@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteGoalController = exports.updateGoalController = exports.getGoalsController = exports.createGoalController = void 0;
+exports.deleteGoalController = exports.updateGoalController = exports.getGoalController = exports.getGoalsController = exports.createGoalController = void 0;
 const goalModel = __importStar(require("../models/goalModel"));
 const createGoalController = async (req, res) => {
     try {
@@ -58,6 +58,16 @@ const getGoalsController = async (req, res) => {
     }
 };
 exports.getGoalsController = getGoalsController;
+const getGoalController = async (req, res) => {
+    try {
+        const goal = await goalModel.getGoalById(Number(req.params.id));
+        res.status(200).json(goal);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+exports.getGoalController = getGoalController;
 const updateGoalController = async (req, res) => {
     try {
         const updatedGoal = await goalModel.updateGoal(Number(req.params.id), req.body);

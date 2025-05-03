@@ -16,7 +16,11 @@ export const registerUser = async (
     const user = await createUser({ name, email, password: hashedPassword });
 
     const token = createToken({ id: user.id, email: user.email });
-    return { user, token };
+
+    // Remove password before returning
+    const { password: _pw, ...safeUser } = user;
+
+    return { user: safeUser, token };
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -31,13 +35,19 @@ export const loginUser = async (email: string, password: string) => {
     }
 
     const token = createToken({ id: user.id, email: user.email });
-    return { user, token };
+
+    // Remove password before returning
+    const { password: _pw, ...safeUser } = user;
+
+    return { user: safeUser, token };
 };
 
-export const getUser = async (id: number) => {
-    const user = await getUserById(id);
+export const getUser = async (userId: number) => {
+    const user = await getUserById(userId);
     if (!user) {
         throw new Error("Cannot find user");
     }
-    return user;
+    // Remove password before returning
+    const { id, name, email } = user;
+    return { id, name, email };
 };

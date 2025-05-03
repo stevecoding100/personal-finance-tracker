@@ -14,6 +14,7 @@ async function up(knex) {
         table.decimal("target_amount").notNullable();
         table.decimal("current_amount").defaultTo(0);
         table.date("target_date");
+        table.timestamps(true, true);
     });
 }
 async function down(knex) {

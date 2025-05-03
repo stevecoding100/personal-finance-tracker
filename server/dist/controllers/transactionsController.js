@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTransactionController = exports.updateTransactionController = exports.getTransactionsController = exports.createTransactionController = void 0;
+exports.deleteTransactionController = exports.updateTransactionController = exports.getTransactionController = exports.getTransactionsController = exports.createTransactionController = void 0;
 const transactionModel = __importStar(require("../models/transactionModel"));
 const createTransactionController = async (req, res) => {
     try {
@@ -58,6 +58,16 @@ const getTransactionsController = async (req, res) => {
     }
 };
 exports.getTransactionsController = getTransactionsController;
+const getTransactionController = async (req, res) => {
+    try {
+        const transactions = await transactionModel.getTransactionById(Number(req.params.id));
+        res.status(200).json(transactions);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+exports.getTransactionController = getTransactionController;
 const updateTransactionController = async (req, res) => {
     try {
         const updatedTransaction = await transactionModel.updateTransaction(Number(req.params.id), req.body);

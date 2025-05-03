@@ -28,6 +28,12 @@ export const getTransactionsByUser = async (userId: number) => {
         .orderBy("date", "desc");
 };
 
+export const getTransactionById = async (id: number) => {
+    return db<Transaction>("transactions")
+        .where({ id: id })
+        .orderBy("date", "desc");
+};
+
 export const getMonthlySummary = async (userId: number, month: string) => {
     return db<Transaction>("transactions")
         .select("type")
