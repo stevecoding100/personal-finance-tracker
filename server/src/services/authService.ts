@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { createUser, getUserByEmail } from "../models/userModel";
+import { createUser, getUserByEmail, getUserById } from "../models/userModel";
 import { createToken } from "../utils/jwt";
 
 export const registerUser = async (
@@ -32,4 +32,12 @@ export const loginUser = async (email: string, password: string) => {
 
     const token = createToken({ id: user.id, email: user.email });
     return { user, token };
+};
+
+export const getUser = async (id: number) => {
+    const user = await getUserById(id);
+    if (!user) {
+        throw new Error("Cannot find user");
+    }
+    return user;
 };

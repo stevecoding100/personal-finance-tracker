@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerUser = void 0;
+exports.getUser = exports.loginUser = exports.registerUser = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const userModel_1 = require("../models/userModel");
 const jwt_1 = require("../utils/jwt");
@@ -31,3 +31,11 @@ const loginUser = async (email, password) => {
     return { user, token };
 };
 exports.loginUser = loginUser;
+const getUser = async (id) => {
+    const user = await (0, userModel_1.getUserById)(id);
+    if (!user) {
+        throw new Error("Cannot find user");
+    }
+    return user;
+};
+exports.getUser = getUser;

@@ -33,25 +33,39 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBudget = exports.updateBudget = exports.getBudgetById = exports.getBudgetsByUser = exports.createBudget = void 0;
-const budgetModel = __importStar(require("../models/budgetModel"));
-const createBudget = async (budgetData) => {
-    return await budgetModel.createBudget(budgetData);
+exports.getMeController = exports.loginController = exports.registerController = void 0;
+const authService = __importStar(require("../services/authService"));
+const registerController = async (req, res) => {
+    try {
+        const result = await authService.registerUser(req.body.name, req.body.email, req.body.password);
+        res.status(201).json(result);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
-exports.createBudget = createBudget;
-const getBudgetsByUser = async (userId) => {
-    return await budgetModel.getBudgetsByUser(userId);
+exports.registerController = registerController;
+const loginController = async (req, res) => {
+    try {
+        const result = await authService.loginUser(req.body.email, req.body.password);
+        res.status(200).json(result);
+    }
+    catch (err) {
+        res.status(401).json({ error: err.message });
+    }
 };
-exports.getBudgetsByUser = getBudgetsByUser;
-const getBudgetById = async (id) => {
-    return await budgetModel.getBudgetById(id);
+exports.loginController = loginController;
+const getMeController = async (req, res) => {
+    try {
+        if (!req.user) {
+            res.status(401).json({ error: "Unauthorized" });
+            return;
+        }
+        const user = await authService.getUser(req.user.id);
+        res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(401).json({ error: err.message });
+    }
 };
-exports.getBudgetById = getBudgetById;
-const updateBudget = async (id, updates) => {
-    return await budgetModel.updateBudget(id, updates);
-};
-exports.updateBudget = updateBudget;
-const deleteBudget = async (id) => {
-    return await budgetModel.deleteBudget(id);
-};
-exports.deleteBudget = deleteBudget;
+exports.getMeController = getMeController;

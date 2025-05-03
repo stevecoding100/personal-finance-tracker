@@ -33,25 +33,28 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBudget = exports.updateBudget = exports.getBudgetById = exports.getBudgetsByUser = exports.createBudget = void 0;
-const budgetModel = __importStar(require("../models/budgetModel"));
-const createBudget = async (budgetData) => {
-    return await budgetModel.createBudget(budgetData);
+exports.getBudgetsController = exports.createBudgetController = void 0;
+const budgetService = __importStar(require("../services/budgetService"));
+const createBudgetController = async (req, res) => {
+    try {
+        const budget = await budgetService.createBudget({
+            ...req.body,
+            user_id: req.user.id,
+        });
+        res.status(201).json(budget);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
-exports.createBudget = createBudget;
-const getBudgetsByUser = async (userId) => {
-    return await budgetModel.getBudgetsByUser(userId);
+exports.createBudgetController = createBudgetController;
+const getBudgetsController = async (req, res) => {
+    try {
+        const budgets = await budgetService.getBudgetsByUser(req.user.id);
+        res.status(200).json(budgets);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
-exports.getBudgetsByUser = getBudgetsByUser;
-const getBudgetById = async (id) => {
-    return await budgetModel.getBudgetById(id);
-};
-exports.getBudgetById = getBudgetById;
-const updateBudget = async (id, updates) => {
-    return await budgetModel.updateBudget(id, updates);
-};
-exports.updateBudget = updateBudget;
-const deleteBudget = async (id) => {
-    return await budgetModel.deleteBudget(id);
-};
-exports.deleteBudget = deleteBudget;
+exports.getBudgetsController = getBudgetsController;

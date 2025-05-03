@@ -30,3 +30,30 @@ export const getBudgetsController = async (
         res.status(500).json({ error: err.message });
     }
 };
+
+export const updateBudgetController = async (
+    req: AuthedRequest,
+    res: Response
+) => {
+    try {
+        const updatedBudget = await budgetService.updateBudget(
+            Number(req.params.id),
+            req.body
+        );
+        res.status(200).json(updatedBudget);
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+export const deleteBudgetController = async (
+    req: AuthedRequest,
+    res: Response
+) => {
+    try {
+        await budgetService.deleteBudget(Number(req.params.id));
+        res.status(200).json({ message: "Budget deleted successfully" });
+    } catch (err: any) {
+        res.status(400).json({ error: err.message });
+    }
+};
