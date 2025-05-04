@@ -20,7 +20,13 @@ export const loginController = async (req: Request, res: Response) => {
             req.body.email,
             req.body.password
         );
-        res.status(200).json(result);
+        const { user, token } = result;
+        res.status(200).json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            token,
+        });
     } catch (err: any) {
         res.status(401).json({ error: err.message });
     }

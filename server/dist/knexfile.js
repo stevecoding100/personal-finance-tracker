@@ -18,10 +18,11 @@ const knexConfig = {
         },
         migrations: {
             directory: "./db/migrations",
-            extension: "ts",
         },
     },
 };
 exports.default = knexConfig;
 module.exports = knexConfig; // For CLI
 // DB_NAME=personal_finance npx knex migrate:latest --knexfile src/knexfile.ts
+// npx knex migrate:rollback --all --knexfile ./src/knexfile.ts
+// npx knex migrate:latest --knexfile ./src/knexfile.ts

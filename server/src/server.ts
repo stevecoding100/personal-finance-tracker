@@ -12,12 +12,18 @@ import transactionRoutes from "./routes/transactionRoutes";
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
-app.use(cors());
+app.use(
+    cors({
+        origin: "*", // Allow all origins
+        methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
+        allowedHeaders: "Content-Type, Authorization",
+    })
+);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/budgets", budgetRoutes);
-app.use("/api/goals", goalRoutes);
-app.use("/api/transactions", transactionRoutes);
+app.use("/api/budget", budgetRoutes);
+app.use("/api/goal", goalRoutes);
+app.use("/api/transaction", transactionRoutes);
 
 app.listen(3000, () => {
     console.log("App is running on port 3000");

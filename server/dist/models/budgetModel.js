@@ -4,11 +4,7 @@ exports.deleteBudget = exports.updateBudget = exports.getBudgetById = exports.ge
 const db_1 = require("../db/db");
 const createBudget = async (budgetData) => {
     const [budget] = await (0, db_1.db)("budgets")
-        .insert({
-        ...budgetData,
-        created_at: new Date(),
-        updated_at: new Date(),
-    })
+        .insert(budgetData)
         .returning("*");
     return budget;
 };

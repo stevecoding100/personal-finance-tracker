@@ -5,18 +5,15 @@ export interface Budget {
     user_id: number;
     category: string;
     amount: number;
-    month: string; // Format: "YYYY-MM"
     created_at?: Date;
     updated_at?: Date;
 }
 
-export const createBudget = async (budgetData: Budget): Promise<Budget> => {
+export const createBudget = async (
+    budgetData: Omit<Budget, "id">
+): Promise<Budget> => {
     const [budget] = await db<Budget>("budgets")
-        .insert({
-            ...budgetData,
-            created_at: new Date(),
-            updated_at: new Date(),
-        })
+        .insert(budgetData)
         .returning("*");
     return budget;
 };

@@ -2,9 +2,7 @@ import * as budgetModel from "../models/budgetModel";
 import { Budget } from "../models/budgetModel";
 
 // Create a new budget
-export const createBudget = async (
-    budgetData: Omit<Budget, "id" | "created_at" | "updated_at">
-) => {
+export const createBudget = async (budgetData: Omit<Budget, "id">) => {
     return await budgetModel.createBudget(budgetData);
 };
 
