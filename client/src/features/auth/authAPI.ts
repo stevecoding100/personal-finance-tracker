@@ -1,4 +1,4 @@
-import { authorizedFetch } from "./api";
+import { authorizedFetch } from "../../utils/api";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,9 +9,15 @@ export const login = async (email: string, password: string) => {
     });
     if (!res.ok) throw new Error("Login failed");
     const data = await res.json();
-    // Save token in localStorage
+
     localStorage.setItem("token", data.token);
-    return data;
+    localStorage.setItem("user", JSON.stringify(data.user));
+    return {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        token: data.token,
+    };
 };
 
 export const register = async (
@@ -25,7 +31,13 @@ export const register = async (
     });
     if (!res.ok) throw new Error("Registration failed");
     const data = await res.json();
-    // Save token in localStorage
+
     localStorage.setItem("token", data.token);
-    return data;
+    localStorage.setItem("user", JSON.stringify(data.user));
+    return {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        token: data.token,
+    };
 };
