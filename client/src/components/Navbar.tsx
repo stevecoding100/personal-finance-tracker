@@ -54,8 +54,18 @@ const userNavigation = [
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    token: string;
+}
 
-export default function Navbar() {
+interface NavbarProps {
+    user: User | null;
+}
+
+export default function Navbar({ user }: NavbarProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
@@ -357,7 +367,7 @@ export default function Navbar() {
                                                 aria-hidden="true"
                                                 className="ml-4 text-sm/6 font-semibold text-gray-900"
                                             >
-                                                Tom Cook
+                                                {user?.name}
                                             </span>
                                             <ChevronDownIcon
                                                 aria-hidden="true"

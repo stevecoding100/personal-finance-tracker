@@ -8,8 +8,10 @@ export const store = configureStore({
 });
 
 const token = localStorage.getItem("token");
-if (token) {
-    const user = JSON.parse(atob(token.split(".")[1])); // crude decode
+const storedUser = localStorage.getItem("user");
+
+if (token && storedUser) {
+    const user = JSON.parse(storedUser);
     store.dispatch(setUser({ ...user, token }));
 }
 export default store;
