@@ -4,7 +4,7 @@ import { setUser } from "../features/auth/authSlice";
 import { login } from "../features/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 
-export const Login = () => {
+const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -105,3 +105,4 @@ export const Login = () => {
         </div>
     );
 };
+export default Login;

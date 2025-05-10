@@ -4,7 +4,7 @@ import { setUser } from "../features/auth/authSlice";
 import { register } from "../features/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 
-export const Signup = () => {
+const Signup = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -117,3 +117,4 @@ export const Signup = () => {
         </div>
     );
 };
+export default Signup;

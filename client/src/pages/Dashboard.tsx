@@ -73,7 +73,7 @@ export default function Dashboard() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         dispatch(signOut());
-        navigate("/sigin");
+        navigate("/");
     };
     return (
         <>
