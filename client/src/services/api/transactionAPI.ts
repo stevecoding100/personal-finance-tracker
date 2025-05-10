@@ -1,7 +1,7 @@
 // src/services/api/transactionAPI.ts
 
 import { authorizedFetch } from "../../utils/api";
-import { Transaction } from "../../types/transactions";
+import { Transaction } from "../../types/type";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,7 +30,10 @@ export const fetchTransactionById = async (id: number) => {
     return res.json();
 };
 
-export const updateTransaction = async (id: number, data: Partial<any>) => {
+export const updateTransaction = async (
+    id: number,
+    data: Partial<Transaction>
+) => {
     const res = await authorizedFetch(`${API_URL}/transaction/update/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

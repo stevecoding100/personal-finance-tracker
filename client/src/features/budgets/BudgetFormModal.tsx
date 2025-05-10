@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
-    editTransaction,
-    deleteTransactionById,
-    addTransaction,
-} from "../transactions/transactionSlice";
-import type { AppDispatch } from "../../store/store";
-import { Transaction } from "../../types/type";
+    updateBudgetThunk,
+    deleteBudgetThunk,
+    createBudgetThunk,
+    clearBudgets,
+    fetchBudgetsThunk,
+} from "../budgets/budgetSlice";
+import type { AppDispatch, RootState } from "../../store/store";
+import { Budget } from "../../types/type";
 
-const expenseCategories = [
+const categories = [
     "Rent",
     "Mortgage",
     "Utilities",
@@ -30,47 +32,31 @@ const expenseCategories = [
     "Other",
 ];
 
-const incomeCategories = [
-    "Salary",
-    "Freelance",
-    "Bonus",
-    "Interest",
-    "Dividends",
-    "Investments",
-    "Gifts",
-    "Refunds",
-    "Rental Income",
-    "Business Income",
-];
-
-const TransactionFormModal: React.FC<{
+const BudgetFormModal: React.FC<{
     onClose: () => void;
-    selectedTransaction: Transaction | null;
-}> = ({ onClose, selectedTransaction }) => {
+    selectedBudget: Budget | null;
+    page: number;
+    limit: number;
+}> = ({ onClose, selectedBudget, page, limit }) => {
     const dispatch = useDispatch<AppDispatch>();
-
+    const userId = useSelector((state: RootState) => state.auth.user?.id);
     const [formData, setFormData] = useState({
         category: "",
         amount: 0,
-        type: "expense",
         date: "",
-        description: "",
     });
 
     useEffect(() => {
-        if (selectedTransaction) {
+        if (selectedBudget) {
             setFormData({
-                category: selectedTransaction.category,
-                amount: selectedTransaction.amount,
-                type: selectedTransaction.type,
-                date: new Date(selectedTransaction.date)
+                category: selectedBudget.category,
+                amount: selectedBudget.amount,
+                date: new Date(selectedBudget.created_at)
                     .toISOString()
                     .split("T")[0],
-                description: selectedTransaction.description || "",
             });
-            console.log("Selected Transaction:", selectedTransaction);
         }
-    }, [selectedTransaction]);
+    }, [selectedBudget]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -78,25 +64,39 @@ const TransactionFormModal: React.FC<{
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "amount" ? parseFloat(value) : value,
+            [name]:
+                name === "amount"
+                    ? value === ""
+                        ? ""
+                        : parseFloat(value)
+                    : value,
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (selectedTransaction) {
-            dispatch(
-                editTransaction({
-                    id: selectedTransaction.id,
-                    data: {
-                        ...formData,
-                        type: formData.type as "expense" | "income",
-                    },
-                })
+        if (!userId) {
+            // If userId is not available, handle this scenario
+            alert("User is not logged in.");
+            return;
+        }
+        const payload = {
+            category: formData.category,
+            amount: formData.amount,
+            created_at: new Date(formData.date).toISOString(),
+            user_id: userId,
+        };
+
+        if (selectedBudget) {
+            await dispatch(
+                updateBudgetThunk({ id: selectedBudget.id, data: payload })
             );
         } else {
-            dispatch(addTransaction({ ...formData }));
+            await dispatch(createBudgetThunk(payload));
         }
+        // After mutation, refresh
+        dispatch(clearBudgets());
+        dispatch(fetchBudgetsThunk({ page, limit }));
         onClose();
     };
 
@@ -104,8 +104,8 @@ const TransactionFormModal: React.FC<{
         const confirmDelete = window.confirm(
             "Are you sure you want to delete this transaction?"
         );
-        if (confirmDelete && selectedTransaction) {
-            dispatch(deleteTransactionById(selectedTransaction.id));
+        if (confirmDelete && selectedBudget) {
+            dispatch(deleteBudgetThunk(selectedBudget.id));
             onClose();
         }
     };
@@ -117,27 +117,10 @@ const TransactionFormModal: React.FC<{
                 className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
             >
                 <h2 className="text-lg font-semibold mb-4">
-                    {selectedTransaction
-                        ? "Edit Transaction"
-                        : "Add Transaction"}
+                    {selectedBudget ? "Edit Budget" : "Add Budget"}
                 </h2>
 
                 <div className="mb-4">
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium">
-                            Type
-                        </label>
-                        <select
-                            name="type"
-                            value={formData.type}
-                            onChange={handleChange}
-                            className="mt-1 p-2 border rounded w-full"
-                        >
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
-                        </select>
-                    </div>
-
                     <label className="block text-sm font-medium">
                         Category
                     </label>
@@ -149,10 +132,7 @@ const TransactionFormModal: React.FC<{
                         className="mt-1 p-2 border rounded w-full"
                     >
                         <option value="">Select a category</option>
-                        {(formData.type === "income"
-                            ? incomeCategories
-                            : expenseCategories
-                        ).map((cat) => (
+                        {categories.map((cat) => (
                             <option key={cat} value={cat}>
                                 {cat}
                             </option>
@@ -165,7 +145,7 @@ const TransactionFormModal: React.FC<{
                     <input
                         name="amount"
                         type="number"
-                        value={formData.amount}
+                        value={formData.amount === 0 ? "" : formData.amount}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded w-full"
@@ -184,7 +164,7 @@ const TransactionFormModal: React.FC<{
                     />
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <label className="block text-sm font-medium">
                         Description
                     </label>
@@ -195,10 +175,10 @@ const TransactionFormModal: React.FC<{
                         maxLength={35}
                         className="mt-1 p-2 border rounded w-full"
                     />
-                </div>
+                </div> */}
 
                 <div className="flex justify-between items-center">
-                    {selectedTransaction ? (
+                    {selectedBudget ? (
                         <button
                             type="button"
                             onClick={handleDelete}
@@ -231,4 +211,4 @@ const TransactionFormModal: React.FC<{
     );
 };
 
-export default TransactionFormModal;
+export default BudgetFormModal;

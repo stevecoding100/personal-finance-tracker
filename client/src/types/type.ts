@@ -6,3 +6,11 @@ export type Transaction = {
     date: string;
     description: string;
 };
+export type Budget = {
+    id: number;
+    user_id: number;
+    amount: number;
+    category: string;
+    created_at: string;
+    updated_at: string;
+};

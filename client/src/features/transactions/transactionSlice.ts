@@ -6,7 +6,7 @@ import {
     updateTransaction,
     deleteTransaction,
 } from "../../services/api/transactionAPI";
-import { Transaction } from "../../types/transactions";
+import { Transaction } from "../../types/type";
 
 interface TransactionsState {
     transactions: Transaction[];
