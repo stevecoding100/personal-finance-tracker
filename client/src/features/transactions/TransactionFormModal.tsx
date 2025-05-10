@@ -68,7 +68,6 @@ const TransactionFormModal: React.FC<{
                     .split("T")[0],
                 description: selectedTransaction.description || "",
             });
-            console.log("Selected Transaction:", selectedTransaction);
         }
     }, [selectedTransaction]);
 

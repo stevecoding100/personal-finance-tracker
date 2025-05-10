@@ -6,6 +6,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import RecentTransactions from "./features/transactions/RecenTransactions";
 import Carddata from "./components/Carddata";
 import RecentBudgets from "./features/budgets/RecentBudgets";
+import RecentSavings from "./features/savings/RecentSavings";
 
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Login = lazy(() => import("@/pages/Login"));
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                         element={<RecentTransactions />}
                     />
                     <Route path="budgets" element={<RecentBudgets />} />
+                    <Route path="savings" element={<RecentSavings />} />
                 </Route>
             </Routes>
         </Suspense>

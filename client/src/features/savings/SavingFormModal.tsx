@@ -1,62 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    updateBudgetThunk,
-    deleteBudgetThunk,
-    createBudgetThunk,
-    clearBudgets,
-    fetchBudgetsThunk,
-} from "../budgets/budgetSlice";
+    updateSavingThunk,
+    deleteSavingThunk,
+    createSavingThunk,
+    clearSavings,
+    fetchSavingsThunk,
+} from "../../features/savings/savingSlice";
 import type { AppDispatch, RootState } from "../../store/store";
-import { Budget } from "../../types/type";
+import { Saving } from "../../types/type";
 
-const categories = [
-    "Rent",
-    "Mortgage",
-    "Utilities",
-    "Groceries",
-    "Restaurants",
-    "Transportation",
-    "Gas",
-    "Public Transit",
-    "Healthcare",
-    "Insurance",
-    "Clothing",
-    "Entertainment",
-    "Subscriptions",
-    "Travel",
-    "Education",
-    "Loan Payments",
-    "Savings",
-    "Gifts",
-    "Other",
-];
-
-const BudgetFormModal: React.FC<{
+const SavingFormModal: React.FC<{
     onClose: () => void;
-    selectedBudget: Budget | null;
+    selectedSaving: Saving | null;
     page: number;
     limit: number;
-}> = ({ onClose, selectedBudget, page, limit }) => {
+}> = ({ onClose, selectedSaving, page, limit }) => {
     const dispatch = useDispatch<AppDispatch>();
     const userId = useSelector((state: RootState) => state.auth.user?.id);
     const [formData, setFormData] = useState({
-        category: "",
-        amount: 0,
-        date: "",
+        title: "",
+        target_amount: 0,
+        current_amount: 0,
+        target_date: "",
     });
 
     useEffect(() => {
-        if (selectedBudget) {
+        if (selectedSaving) {
             setFormData({
-                category: selectedBudget.category,
-                amount: selectedBudget.amount,
-                date: new Date(selectedBudget.created_at)
-                    .toISOString()
-                    .split("T")[0],
+                title: selectedSaving.title,
+                target_amount: selectedSaving.target_amount,
+                current_amount: selectedSaving.current_amount,
+                target_date: selectedSaving.target_date?.split("T")[0] || "",
             });
         }
-    }, [selectedBudget]);
+    }, [selectedSaving]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -64,43 +42,48 @@ const BudgetFormModal: React.FC<{
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "amount" ? parseFloat(value) : value,
+            [name]:
+                name === "target_amount" || name === "current_amount"
+                    ? parseFloat(value)
+                    : value,
         }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!userId) {
-            // If userId is not available, handle this scenario
             alert("User is not logged in.");
             return;
         }
         const payload = {
-            category: formData.category,
-            amount: formData.amount,
-            created_at: new Date(formData.date).toISOString(),
+            title: formData.title,
+            target_amount: formData.target_amount,
+            current_amount: formData.current_amount,
+            target_date: formData.target_date
+                ? new Date(formData.target_date).toISOString()
+                : null,
             user_id: userId,
         };
 
-        if (selectedBudget) {
+        if (selectedSaving) {
             await dispatch(
-                updateBudgetThunk({ id: selectedBudget.id, data: payload })
+                updateSavingThunk({ id: selectedSaving.id, data: payload })
             );
         } else {
-            await dispatch(createBudgetThunk(payload));
+            await dispatch(createSavingThunk(payload));
         }
         // After mutation, refresh
-        dispatch(clearBudgets());
-        dispatch(fetchBudgetsThunk({ page, limit }));
+        dispatch(clearSavings());
+        dispatch(fetchSavingsThunk({ page, limit }));
         onClose();
     };
 
     const handleDelete = () => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this transaction?"
-        );
-        if (confirmDelete && selectedBudget) {
-            dispatch(deleteBudgetThunk(selectedBudget.id));
+        if (
+            selectedSaving &&
+            window.confirm("Are you sure you want to delete this saving goal?")
+        ) {
+            dispatch(deleteSavingThunk(selectedSaving.id));
             onClose();
         }
     };
@@ -112,35 +95,30 @@ const BudgetFormModal: React.FC<{
                 className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
             >
                 <h2 className="text-lg font-semibold mb-4">
-                    {selectedBudget ? "Edit Budget" : "Add Budget"}
+                    {selectedSaving ? "Edit Saving Goal" : "Add Saving Goal"}
                 </h2>
 
                 <div className="mb-4">
-                    <label className="block text-sm font-medium">
-                        Category
-                    </label>
-                    <select
-                        name="category"
-                        value={formData.category}
+                    <label className="block text-sm font-medium">Title</label>
+                    <input
+                        name="title"
+                        type="text"
+                        value={formData.title}
                         onChange={handleChange}
                         required
+                        maxLength={50}
                         className="mt-1 p-2 border rounded w-full"
-                    >
-                        <option value="">Select a category</option>
-                        {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                                {cat}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-sm font-medium">Amount</label>
+                    <label className="block text-sm font-medium">
+                        Target Amount
+                    </label>
                     <input
-                        name="amount"
+                        name="target_amount"
                         type="number"
-                        value={formData.amount}
+                        value={formData.target_amount}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded w-full"
@@ -148,32 +126,34 @@ const BudgetFormModal: React.FC<{
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-sm font-medium">Date</label>
+                    <label className="block text-sm font-medium">
+                        Current Amount
+                    </label>
                     <input
-                        name="date"
-                        type="date"
-                        value={formData.date}
+                        name="current_amount"
+                        type="number"
+                        value={formData.current_amount}
                         onChange={handleChange}
                         required
                         className="mt-1 p-2 border rounded w-full"
                     />
                 </div>
 
-                {/* <div className="mb-4">
+                <div className="mb-4">
                     <label className="block text-sm font-medium">
-                        Description
+                        Target Date
                     </label>
                     <input
-                        name="description"
-                        value={formData.description}
+                        name="target_date"
+                        type="date"
+                        value={formData.target_date}
                         onChange={handleChange}
-                        maxLength={35}
                         className="mt-1 p-2 border rounded w-full"
                     />
-                </div> */}
+                </div>
 
                 <div className="flex justify-between items-center">
-                    {selectedBudget ? (
+                    {selectedSaving ? (
                         <button
                             type="button"
                             onClick={handleDelete}
@@ -206,4 +186,4 @@ const BudgetFormModal: React.FC<{
     );
 };
 
-export default BudgetFormModal;
+export default SavingFormModal;

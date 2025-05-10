@@ -13,7 +13,7 @@ const RecentBudgets: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { budgets, hasMore, status, error } = useSelector(
+    const { budgets, loading, status, error } = useSelector(
         (state: RootState) => state.budgets
     );
 
@@ -146,25 +146,18 @@ const RecentBudgets: React.FC = () => {
                 </div>
             </div>
             <div className="flex justify-center mt-6">
-                {status === "loading" && page > 1 ? (
+                {loading && page > 1 ? (
                     <p className="text-gray-500">Loading more...</p>
-                ) : hasMore ? (
-                    <button
-                        onClick={handleLoadMore}
-                        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
-                    >
-                        Load More
-                    </button>
                 ) : (
-                    <p className="text-gray-500">
-                        No more transactions to load.
-                    </p>
+                    <p className="text-gray-500">All budgets are loaded.</p>
                 )}
             </div>
             {isModalOpen && (
                 <BudgetFormModal
                     onClose={() => setIsModalOpen(false)}
                     selectedBudget={selectedBudget}
+                    page={page}
+                    limit={limit}
                 />
             )}
         </div>
