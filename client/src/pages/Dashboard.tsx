@@ -1,6 +1,7 @@
 ("use client");
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store";
 import { useState } from "react";
 import {
     Dialog,
@@ -15,44 +16,45 @@ import {
 import {
     Bars3Icon,
     BellIcon,
-    CalendarIcon,
     Cog6ToothIcon,
-    FolderIcon,
     HomeIcon,
-    UsersIcon,
     XMarkIcon,
+    CalculatorIcon,
+    CurrencyDollarIcon,
+    BanknotesIcon,
 } from "@heroicons/react/24/outline";
 import {
     ChevronDownIcon,
     MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 
-import { Link, Outlet } from "react-router-dom";
+import { useLocation, Link, Outlet, useNavigate } from "react-router-dom";
+import { signOut } from "../features/auth/authSlice";
 
 const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
     {
         name: "Transactions",
         href: "/dashboard/transactions",
-        icon: UsersIcon,
+        icon: BanknotesIcon,
         current: false,
     },
     {
         name: "Savings",
         href: "/dashboard/savings",
-        icon: FolderIcon,
+        icon: CurrencyDollarIcon,
         current: false,
     },
     {
         name: "Budget",
         href: "/dashboard/budgets",
-        icon: CalendarIcon,
+        icon: CalculatorIcon,
         current: false,
     },
 ];
 
 const userNavigation = [
-    { name: "Your profile", href: "#" },
+    { name: "Your profile", href: "/dashboard/profile" },
     { name: "Sign out", href: "#" },
 ];
 
@@ -61,9 +63,18 @@ function classNames(...classes) {
 }
 
 export default function Dashboard() {
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const user = useSelector((state: RootState) => state.auth.user);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    const handleSignOut = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        dispatch(signOut());
+        navigate("/sigin");
+    };
     return (
         <>
             <div>
@@ -176,25 +187,29 @@ export default function Dashboard() {
                             >
                                 <li>
                                     <ul role="list" className="-mx-2 space-y-1">
-                                        {navigation.map((item) => (
-                                            <li key={item.name}>
-                                                <Link
-                                                    to={item.href}
-                                                    className={classNames(
-                                                        item.current
-                                                            ? "bg-gray-800 text-white"
-                                                            : "text-gray-400 hover:bg-gray-800 hover:text-white",
-                                                        "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                                                    )}
-                                                >
-                                                    <item.icon
-                                                        aria-hidden="true"
-                                                        className="size-6 shrink-0"
-                                                    />
-                                                    {item.name}
-                                                </Link>
-                                            </li>
-                                        ))}
+                                        {navigation.map((item) => {
+                                            const isActive =
+                                                location.pathname === item.href;
+                                            return (
+                                                <li key={item.name}>
+                                                    <Link
+                                                        to={item.href}
+                                                        className={classNames(
+                                                            isActive
+                                                                ? "bg-gray-800 text-white"
+                                                                : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                                                            "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
+                                                        )}
+                                                    >
+                                                        <item.icon
+                                                            aria-hidden="true"
+                                                            className="size-6 shrink-0"
+                                                        />
+                                                        {item.name}
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </li>
 
@@ -298,16 +313,27 @@ export default function Dashboard() {
                                         transition
                                         className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                                     >
-                                        {userNavigation.map((item) => (
-                                            <MenuItem key={item.name}>
-                                                <a
-                                                    href={item.href}
-                                                    className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
-                                                >
-                                                    {item.name}
-                                                </a>
-                                            </MenuItem>
-                                        ))}
+                                        {userNavigation.map((item) =>
+                                            item.name === "Sign out" ? (
+                                                <MenuItem key={item.name}>
+                                                    <button
+                                                        onClick={handleSignOut}
+                                                        className="block w-full text-left px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                                                    >
+                                                        {item.name}
+                                                    </button>
+                                                </MenuItem>
+                                            ) : (
+                                                <MenuItem key={item.name}>
+                                                    <Link
+                                                        to={item.href}
+                                                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                                                    >
+                                                        {item.name}
+                                                    </Link>
+                                                </MenuItem>
+                                            )
+                                        )}
                                     </MenuItems>
                                 </Menu>
                             </div>
@@ -315,72 +341,6 @@ export default function Dashboard() {
                     </div>
                     {/* Main content here */}
                     <main className="py-10">
-                        <div className="px-4 sm:px-6 lg:px-8">
-                            {/* Transactions overview */}
-                            {/* <section className="mb-6">
-                                <h2 className="text-xl font-semibold mb-2">
-                                    Recent Transactions
-                                </h2>
-                                <ul className="bg-white p-4 rounded shadow">
-                                    {transactions.map((tx: any) => (
-                                        <li
-                                            key={tx.id}
-                                            className="border-b py-2"
-                                        >
-                                            {tx.description} - ${tx.amount}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section> */}
-                            {/* Goals overview */}
-                            {/* <section className="mb-6">
-                                <h2 className="text-xl font-semibold mb-2">
-                                    Your Goals
-                                </h2>
-                                <ul className="bg-white p-4 rounded shadow">
-                                    {goals.map((goal: any) => (
-                                        <li
-                                            key={goal.id}
-                                            className="py-2 border-b"
-                                        >
-                                            {goal.title}: ${goal.current_amount}{" "}
-                                            ${goal.target_amount}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section> */}
-                            {/* Budget Overview */}
-                            {/* <section>
-                                <h2 className="text-xl font-semibold mb-2">
-                                    Budget Overview
-                                </h2>
-                                <ul className="bg-white p-4 rounded shadow">
-                                    {budgets.map((budget: any) => (
-                                        <li
-                                            key={budget.id}
-                                            className="py-2 border-b"
-                                        >
-                                            <p>
-                                                ${budget.amount}{" "}
-                                                <em>
-                                                    {budget.category}{" "}
-                                                    {new Date(
-                                                        budget.created_at
-                                                    ).toLocaleDateString(
-                                                        "en-US",
-                                                        {
-                                                            month: "long",
-                                                            day: "numeric",
-                                                            year: "numeric",
-                                                        }
-                                                    )}
-                                                </em>
-                                            </p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section> */}
-                        </div>
                         <Outlet />
                     </main>
                 </div>

@@ -88,7 +88,10 @@ const TransactionFormModal: React.FC<{
             dispatch(
                 editTransaction({
                     id: selectedTransaction.id,
-                    data: formData,
+                    data: {
+                        ...formData,
+                        type: formData.type as "expense" | "income",
+                    },
                 })
             );
         } else {
@@ -189,6 +192,7 @@ const TransactionFormModal: React.FC<{
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
+                        maxLength={35}
                         className="mt-1 p-2 border rounded w-full"
                     />
                 </div>
