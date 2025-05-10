@@ -1,122 +1,7 @@
-// import React, { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../store/store";
-// import {
-//     fetchTransactions,
-//     fetchGoals,
-//     fetchBudgets,
-// } from "../features/dashboard/dashboardAPI";
-// import Navbar from "../components/Navbar";
-
-// const Dashboard = () => {
-//     const user = useSelector((state: RootState) => state.auth.user);
-//     const [transactions, setTransactions] = useState([]);
-//     const [goals, setGoals] = useState([]);
-//     const [budgets, setBudgets] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState("");
-
-//     useEffect(() => {
-//         const loadDashboardData = async () => {
-//             try {
-//                 const [txs, gs, bs] = await Promise.all([
-//                     fetchTransactions(),
-//                     fetchGoals(),
-//                     fetchBudgets(),
-//                 ]);
-//                 setTransactions(txs);
-//                 setGoals(gs);
-//                 setBudgets(bs);
-//             } catch (err) {
-//                 console.error(err);
-//                 setError("Failed to load dashboard data.");
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         loadDashboardData();
-//     }, []);
-
-//     if (loading) return <p className="p-4">Loading dashboard...</p>;
-//     if (error) return <p className="p-4 text-red-500">{error}</p>;
-
-//     return (
-//         <div className="min-h-screen">
-//             <Navbar user={user} />
-
-//             {/* Main Dashboard Content */}
-//             <main className="w-[60%] mx-auto">
-//                 <h1 className="text-3xl font-bold mb-6">
-//                     Welcome, {user?.name} 👋
-//                 </h1>
-
-//                 <section className="mb-6">
-//                     <h2 className="text-xl font-semibold mb-2">
-//                         Recent Transactions
-//                     </h2>
-//                     <ul className="bg-white p-4 rounded shadow">
-//                         {transactions.map((tx: any) => (
-//                             <li key={tx.id} className="border-b py-2">
-//                                 {tx.description} - ${tx.amount}
-//                             </li>
-//                         ))}
-//                     </ul>
-//                 </section>
-
-//                 <section className="mb-6">
-//                     <h2 className="text-xl font-semibold mb-2">Your Goals</h2>
-//                     <ul className="bg-white p-4 rounded shadow">
-//                         {goals.map((goal: any) => (
-//                             <li key={goal.id} className="py-2 border-b">
-//                                 {goal.title}: ${goal.current_amount} / $
-//                                 {goal.target_amount}
-//                             </li>
-//                         ))}
-//                     </ul>
-//                 </section>
-
-//                 <section>
-//                     <h2 className="text-xl font-semibold mb-2">
-//                         Budget Overview
-//                     </h2>
-//                     <ul className="bg-white p-4 rounded shadow">
-//                         {budgets.map((budget: any) => (
-//                             <li key={budget.id} className="py-2 border-b">
-//                                 <p>
-//                                     ${budget.amount}{" "}
-//                                     <em>
-//                                         {budget.category}{" "}
-//                                         {new Date(
-//                                             budget.created_at
-//                                         ).toLocaleDateString("en-US", {
-//                                             month: "long",
-//                                             day: "numeric",
-//                                             year: "numeric",
-//                                         })}
-//                                     </em>
-//                                 </p>
-//                             </li>
-//                         ))}
-//                     </ul>
-//                 </section>
-//             </main>
-//         </div>
-//     );
-// };
-
-// export default Dashboard;
-
 ("use client");
 
-import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import {
-    fetchTransactions,
-    fetchGoals,
-    fetchBudgets,
-} from "../features/dashboard/dashboardAPI";
+import { useState } from "react";
 import {
     Dialog,
     DialogBackdrop,
@@ -131,9 +16,7 @@ import {
     Bars3Icon,
     BellIcon,
     CalendarIcon,
-    ChartPieIcon,
     Cog6ToothIcon,
-    DocumentDuplicateIcon,
     FolderIcon,
     HomeIcon,
     UsersIcon,
@@ -143,13 +26,29 @@ import {
     ChevronDownIcon,
     MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
-import Carddata from "../components/Carddata";
+
+import { Link, Outlet } from "react-router-dom";
 
 const navigation = [
-    { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-    { name: "Transactions", href: "#", icon: UsersIcon, current: false },
-    { name: "Savings", href: "#", icon: FolderIcon, current: false },
-    { name: "Budget", href: "#", icon: CalendarIcon, current: false },
+    { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
+    {
+        name: "Transactions",
+        href: "/dashboard/transactions",
+        icon: UsersIcon,
+        current: false,
+    },
+    {
+        name: "Savings",
+        href: "/dashboard/savings",
+        icon: FolderIcon,
+        current: false,
+    },
+    {
+        name: "Budget",
+        href: "/dashboard/budgets",
+        icon: CalendarIcon,
+        current: false,
+    },
 ];
 
 const userNavigation = [
@@ -163,47 +62,10 @@ function classNames(...classes) {
 
 export default function Dashboard() {
     const user = useSelector((state: RootState) => state.auth.user);
-    const [transactions, setTransactions] = useState([]);
-    const [goals, setGoals] = useState([]);
-    const [budgets, setBudgets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    useEffect(() => {
-        const loadDashboardData = async () => {
-            try {
-                const [txs, gs, bs] = await Promise.all([
-                    fetchTransactions(),
-                    fetchGoals(),
-                    fetchBudgets(),
-                ]);
-                setTransactions(txs);
-                setGoals(gs);
-                setBudgets(bs);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load dashboard data.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadDashboardData();
-    }, []);
-
-    if (loading) return <p className="p-4">Loading dashboard...</p>;
-    if (error) return <p className="p-4 text-red-500">{error}</p>;
 
     return (
         <>
-            {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
             <div>
                 <Dialog
                     open={sidebarOpen}
@@ -303,7 +165,7 @@ export default function Dashboard() {
                         <div className="flex h-16 shrink-0 items-center">
                             <img
                                 alt="Your Company"
-                                src=""
+                                src="#"
                                 className="h-8 w-auto"
                             />
                         </div>
@@ -316,8 +178,8 @@ export default function Dashboard() {
                                     <ul role="list" className="-mx-2 space-y-1">
                                         {navigation.map((item) => (
                                             <li key={item.name}>
-                                                <a
-                                                    href={item.href}
+                                                <Link
+                                                    to={item.href}
                                                     className={classNames(
                                                         item.current
                                                             ? "bg-gray-800 text-white"
@@ -330,7 +192,7 @@ export default function Dashboard() {
                                                         className="size-6 shrink-0"
                                                     />
                                                     {item.name}
-                                                </a>
+                                                </Link>
                                             </li>
                                         ))}
                                     </ul>
@@ -519,12 +381,7 @@ export default function Dashboard() {
                                 </ul>
                             </section> */}
                         </div>
-                        <Carddata
-                            user={user}
-                            transactions={transactions}
-                            goals={goals}
-                            budgets={budgets}
-                        />
+                        <Outlet />
                     </main>
                 </div>
             </div>

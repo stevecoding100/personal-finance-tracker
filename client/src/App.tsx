@@ -5,6 +5,8 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
+import RecentTransactions from "./features/transactions/RecenTransactions";
+import Carddata from "./components/Carddata";
 
 const App: React.FC = () => {
     return (
@@ -12,14 +14,17 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route
-                path="/dashboard"
+                path="/dashboard/*"
                 element={
                     <PrivateRoute>
                         <Dashboard />
                     </PrivateRoute>
                 }
-            />
-            <Route path="*" element={<Login />} />
+            >
+                <Route path="" element={<Carddata />} />
+
+                <Route path="transactions" element={<RecentTransactions />} />
+            </Route>
         </Routes>
     );
 };

@@ -1,11 +1,47 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
-
+import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { fetchTransactions } from "../services/api/transactionAPI";
+import { fetchGoals } from "../services/api/savingAPI";
+import { fetchBudgets } from "../services/api/budgetAPI";
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 
-export default function Carddata({ user, transactions, goals, budgets }) {
+export default function Carddata() {
+    const user = useSelector((state: RootState) => state.auth.user);
+    const [transactions, setTransactions] = useState([]);
+    const [goals, setGoals] = useState([]);
+    const [budgets, setBudgets] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    useEffect(() => {
+        const loadDashboardData = async () => {
+            try {
+                const [txs, gs, bs] = await Promise.all([
+                    fetchTransactions(),
+                    fetchGoals(),
+                    fetchBudgets(),
+                ]);
+                setTransactions(txs);
+                setGoals(gs);
+                setBudgets(bs);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to load dashboard data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadDashboardData();
+    }, []);
+
+    if (loading) return <p className="p-4">Loading dashboard...</p>;
+    if (error) return <p className="p-4 text-red-500">{error}</p>;
     // Grab the most recent transaction regardless of type
     const mostRecentTx = transactions[transactions.length - 1];
 
@@ -41,7 +77,7 @@ export default function Carddata({ user, transactions, goals, budgets }) {
 
     return (
         <div className="p-4">
-            <div className="mx-auto max-w-4xl px-6 max-lg:text-center lg:max-w-7xl lg:px-8 mb-24">
+            <div className="mx-auto max-w-4xl px-4 max-lg:text-center lg:max-w-7xl lg:px-8 mb-24 xl:ml-2">
                 <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-950 sm:text-6xl lg:text-pretty">
                     Welcome, <span className="ml-2">{user?.name} 👋</span>
                 </h1>
@@ -104,15 +140,15 @@ export default function Carddata({ user, transactions, goals, budgets }) {
                             </p>
                             <div className="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
                                 <div className="text-sm">
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/transactions"
                                         className="font-medium text-indigo-600 hover:text-indigo-500"
                                     >
                                         View all
                                         <span className="sr-only">
                                             {item.name} stats
                                         </span>
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </dd>
