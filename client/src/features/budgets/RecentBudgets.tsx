@@ -17,19 +17,12 @@ const RecentBudgets: React.FC = () => {
         (state: RootState) => state.budgets
     );
 
-    const [page, setPage] = useState(1);
-    const limit = 10;
-
     useEffect(() => {
-        dispatch(fetchBudgetsThunk({ page, limit }));
+        dispatch(fetchBudgetsThunk());
         return () => {
             dispatch(clearBudgets());
         };
-    }, [dispatch, page]);
-
-    const handleLoadMore = () => {
-        setPage((prev) => prev + 1);
-    };
+    }, [dispatch]);
 
     // To open for add
     const handleAdd = () => {
@@ -146,7 +139,7 @@ const RecentBudgets: React.FC = () => {
                 </div>
             </div>
             <div className="flex justify-center mt-6">
-                {loading && page > 1 ? (
+                {loading ? (
                     <p className="text-gray-500">Loading more...</p>
                 ) : (
                     <p className="text-gray-500">All budgets are loaded.</p>
@@ -156,8 +149,6 @@ const RecentBudgets: React.FC = () => {
                 <BudgetFormModal
                     onClose={() => setIsModalOpen(false)}
                     selectedBudget={selectedBudget}
-                    page={page}
-                    limit={limit}
                 />
             )}
         </div>

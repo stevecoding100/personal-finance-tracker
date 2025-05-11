@@ -14,10 +14,8 @@ export const createTransactionAPI = async (data: Omit<Transaction, "id">) => {
     if (!res.ok) throw new Error("Failed to create transaction");
     return res.json();
 };
-export const fetchTransactions = async (page: number, limit: number) => {
-    const res = await authorizedFetch(
-        `${API_URL}/transaction/transactions?page=${page}&limit=${limit}`
-    );
+export const fetchTransactions = async () => {
+    const res = await authorizedFetch(`${API_URL}/transaction/transactions`);
     if (!res.ok) throw new Error("Failed to load transactions");
     return res.json();
 };

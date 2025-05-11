@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     fetchSavingsThunk,
     clearSavings,
-    selectSaving,
 } from "../../features/savings/savingSlice";
 import { Saving } from "@/types/type";
 
@@ -18,19 +17,12 @@ const RecentSavings: React.FC = () => {
         (state: RootState) => state.savings
     );
 
-    const [page, setPage] = useState(1);
-    const limit = 10;
-
     useEffect(() => {
-        dispatch(fetchSavingsThunk({ page, limit }));
+        dispatch(fetchSavingsThunk());
         return () => {
             dispatch(clearSavings());
         };
-    }, [dispatch, page]);
-
-    const handleLoadMore = () => {
-        setPage((prev) => prev + 1);
-    };
+    }, [dispatch]);
 
     const handleAdd = () => {
         setSelectedSaving(null);
@@ -159,18 +151,18 @@ const RecentSavings: React.FC = () => {
                 </div>
             </div>
             <div className="flex justify-center mt-6">
-                {loading && page > 1 ? (
+                {loading ? (
                     <p className="text-gray-500">Loading more...</p>
                 ) : (
-                    <p className="text-gray-500">All goals are loaded.</p>
+                    <p className="text-gray-500">
+                        All saving goals are loaded.
+                    </p>
                 )}
             </div>
             {isModalOpen && (
                 <SavingFormModal
                     onClose={() => setIsModalOpen(false)}
                     selectedSaving={selectedSaving}
-                    page={page}
-                    limit={limit}
                 />
             )}
         </div>

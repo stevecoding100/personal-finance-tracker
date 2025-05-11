@@ -10,8 +10,8 @@ import { Budget } from "../../types/type";
 // Async thunks
 export const fetchBudgetsThunk = createAsyncThunk(
     "budgets/fetchAll",
-    async ({ page, limit }: { page: number; limit: number }) => {
-        const data = await fetchBudgets(page, limit);
+    async () => {
+        const data = await fetchBudgets();
         return data as Budget[];
     }
 );
@@ -23,7 +23,7 @@ export const createBudgetThunk = createAsyncThunk(
         newBudget: {
             category: string;
             amount: number;
-            date: string;
+            created_at: string;
             user_id: number;
         },
         { rejectWithValue }

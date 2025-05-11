@@ -27,9 +27,9 @@ const initialState: TransactionsState = {
 // Async thunks
 export const fetchTransactions = createAsyncThunk(
     "transactions/fetchTransactions",
-    async ({ page, limit }: { page: number; limit: number }, thunkAPI) => {
+    async (thunkAPI) => {
         try {
-            return await fetchTransactionsAPI(page, limit);
+            return await fetchTransactionsAPI();
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -41,7 +41,7 @@ export const createTransaction = createAsyncThunk(
     async (data: Omit<Transaction, "id">, thunkAPI) => {
         try {
             const response = await createTransactionAPI(data);
-            return response;
+            return response as Transaction;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
         }

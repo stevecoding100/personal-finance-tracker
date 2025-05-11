@@ -10,14 +10,14 @@ export const login = async (email: string, password: string) => {
     if (!res.ok) throw new Error("Login failed");
     const data = await res.json();
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    return {
+    const user = {
         id: data.id,
         name: data.name,
         email: data.email,
         token: data.token,
     };
+    localStorage.setItem("user", JSON.stringify(user));
+    return user;
 };
 
 export const register = async (
@@ -32,12 +32,12 @@ export const register = async (
     if (!res.ok) throw new Error("Registration failed");
     const data = await res.json();
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    return {
+    const user = {
         id: data.id,
         name: data.name,
         email: data.email,
         token: data.token,
     };
+    localStorage.setItem("user", JSON.stringify(user));
+    return user;
 };

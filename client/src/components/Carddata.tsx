@@ -1,5 +1,10 @@
 import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
-import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import {
+    CurrencyDollarIcon,
+    CalculatorIcon,
+    BanknotesIcon,
+} from "@heroicons/react/24/outline";
+
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -7,6 +12,7 @@ import { RootState } from "../store/store";
 import { fetchTransactions } from "../services/api/transactionAPI";
 import { fetchGoals } from "../services/api/savingAPI";
 import { fetchBudgets } from "../services/api/budgetAPI";
+import BarChart from "./Barchart";
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
@@ -18,6 +24,7 @@ export default function Carddata() {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
     useEffect(() => {
         const loadDashboardData = async () => {
             try {
@@ -42,6 +49,7 @@ export default function Carddata() {
 
     if (loading) return <p className="p-4">Loading dashboard...</p>;
     if (error) return <p className="p-4 text-red-500">{error}</p>;
+
     // Grab the most recent transaction regardless of type
     const mostRecentTx = transactions[transactions.length - 1];
 
@@ -57,9 +65,23 @@ export default function Carddata() {
     const balance = incomeTotal - expenseTotal;
 
     // Determine if the most recent transaction was income or expense
-    const isIncome = mostRecentTx.type === "income";
-    const changeDirection = isIncome ? "increase" : "decrease";
+    const isIncome = mostRecentTx?.type === "income";
+    const changeDirection = isIncome
+        ? "increase"
+        : mostRecentTx
+        ? "decrease"
+        : "";
     const changeAmount = parseFloat(mostRecentTx?.amount || "0");
+
+    const totalBudgetCurrent = budgets.reduce(
+        (sum, b) => sum + (parseFloat(b?.amount ?? "0") || 0),
+        0
+    );
+
+    const totalGoalCurrent = goals.reduce(
+        (sum, g) => sum + (parseFloat(g?.current_amount ?? "0") || 0),
+        0
+    );
 
     const stats = [
         {
@@ -72,8 +94,35 @@ export default function Carddata() {
             icon: CurrencyDollarIcon,
             change: `$${changeAmount.toFixed(2)}`,
             changeType: changeDirection,
+            link: "/dashboard/transactions",
+        },
+        {
+            id: 2,
+            name: "Total Budget",
+            stat: `$${totalBudgetCurrent.toFixed(2)} `,
+            icon: CalculatorIcon,
+            change: "",
+            changeType: "",
+            link: "/dashboard/budgets",
+        },
+        {
+            id: 3,
+            name: "Total Savings",
+            stat: `$${totalGoalCurrent.toFixed(2)}`,
+            icon: BanknotesIcon,
+            change: "",
+            changeType: "",
+            link: "/dashboard/savings",
         },
     ];
+
+    // Example dataset from goals
+    const goalLabels = goals.map((goal) => goal.title);
+    const goalValues = goals.map((goal) => parseFloat(goal.current_amount));
+
+    // Example dataset from budgets
+    const budgetLabels = budgets.map((b) => b.category);
+    const budgetValues = budgets.map((b) => parseFloat(b.amount));
 
     return (
         <div className="p-4">
@@ -118,17 +167,18 @@ export default function Carddata() {
                                     "ml-2 flex items-baseline text-sm font-semibold"
                                 )}
                             >
-                                {item.changeType === "increase" ? (
-                                    <ArrowUpIcon
-                                        aria-hidden="true"
-                                        className="size-5 shrink-0 self-center text-green-500"
-                                    />
-                                ) : (
-                                    <ArrowDownIcon
-                                        aria-hidden="true"
-                                        className="size-5 shrink-0 self-center text-red-500"
-                                    />
-                                )}
+                                {item.changeType !== "" &&
+                                    (item.changeType === "increase" ? (
+                                        <ArrowUpIcon
+                                            aria-hidden="true"
+                                            className="size-5 shrink-0 self-center text-green-500"
+                                        />
+                                    ) : (
+                                        <ArrowDownIcon
+                                            aria-hidden="true"
+                                            className="size-5 shrink-0 self-center text-red-500"
+                                        />
+                                    ))}
 
                                 <span className="sr-only">
                                     {item.changeType === "increase"
@@ -141,7 +191,7 @@ export default function Carddata() {
                             <div className="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
                                 <div className="text-sm">
                                     <Link
-                                        to="/transactions"
+                                        to={item.link}
                                         className="font-medium text-indigo-600 hover:text-indigo-500"
                                     >
                                         View all
@@ -155,6 +205,31 @@ export default function Carddata() {
                     </div>
                 ))}
             </dl>
+            <div className="my-8">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                    Goals Overview
+                </h2>
+                <BarChart
+                    title="Current Goal Savings"
+                    labels={goalLabels}
+                    data={goalValues}
+                    label="Saved Amount ($)"
+                    color="#10b981" // emerald-500
+                />
+            </div>
+
+            <div className="my-8">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                    Budgets Overview
+                </h2>
+                <BarChart
+                    title="Current Budget Allocations"
+                    labels={budgetLabels}
+                    data={budgetValues}
+                    label="Budgeted Amount ($)"
+                    color="#3b82f6" // blue-500
+                />
+            </div>
         </div>
     );
 }

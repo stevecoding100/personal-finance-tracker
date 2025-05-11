@@ -2,10 +2,8 @@ import { authorizedFetch } from "../../utils/api";
 const API_URL = import.meta.env.VITE_API_URL;
 import { Budget } from "@/types/type";
 
-export const fetchBudgets = async (page: number, limit: number) => {
-    const res = await authorizedFetch(
-        `${API_URL}/budget/budgets?page=${page}&limit=${limit}`
-    );
+export const fetchBudgets = async () => {
+    const res = await authorizedFetch(`${API_URL}/budget/budgets`);
     if (!res.ok) throw new Error("Failed to load budgets");
     return res.json();
 };

@@ -2,7 +2,8 @@ export const authorizedFetch = async (
     url: string,
     options: RequestInit = {}
 ): Promise<Response> => {
-    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    const token = userString ? JSON.parse(userString).token : null;
 
     // Explicitly define headers as a string record
     const headers: Record<string, string> = {

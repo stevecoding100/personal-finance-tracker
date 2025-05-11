@@ -4,13 +4,8 @@ import { Saving } from "../../types/type";
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Fetch all goals
-export const fetchGoals = async (
-    page: number,
-    limit: number
-): Promise<Saving[]> => {
-    const res = await authorizedFetch(
-        `${API_URL}/goal/goals?page=${page}&limit=${limit}`
-    );
+export const fetchGoals = async (): Promise<Saving[]> => {
+    const res = await authorizedFetch(`${API_URL}/goal/goals`);
     if (!res.ok) throw new Error("Failed to fetch goals");
     return res.json();
 };

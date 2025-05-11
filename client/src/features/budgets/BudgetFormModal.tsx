@@ -35,9 +35,7 @@ const categories = [
 const BudgetFormModal: React.FC<{
     onClose: () => void;
     selectedBudget: Budget | null;
-    page: number;
-    limit: number;
-}> = ({ onClose, selectedBudget, page, limit }) => {
+}> = ({ onClose, selectedBudget }) => {
     const dispatch = useDispatch<AppDispatch>();
     const userId = useSelector((state: RootState) => state.auth.user?.id);
     const [formData, setFormData] = useState({
@@ -91,7 +89,7 @@ const BudgetFormModal: React.FC<{
         }
         // After mutation, refresh
         dispatch(clearBudgets());
-        dispatch(fetchBudgetsThunk({ page, limit }));
+        dispatch(fetchBudgetsThunk());
         onClose();
     };
 

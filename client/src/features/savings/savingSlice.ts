@@ -12,12 +12,9 @@ import { Saving } from "../../types/type";
 
 export const fetchSavingsThunk = createAsyncThunk(
     "savings/fetchAll",
-    async (
-        { page, limit }: { page: number; limit: number },
-        { rejectWithValue }
-    ) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const data = await fetchGoals(page, limit);
+            const data = await fetchGoals();
             return data as Saving[];
         } catch (err: any) {
             return rejectWithValue(err.message);

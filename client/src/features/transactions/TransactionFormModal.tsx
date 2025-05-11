@@ -3,7 +3,8 @@ import { useDispatch } from "react-redux";
 import {
     editTransaction,
     deleteTransactionById,
-    addTransaction,
+    fetchTransactions,
+    createTransaction,
 } from "../transactions/transactionSlice";
 import type { AppDispatch } from "../../store/store";
 import { Transaction } from "../../types/type";
@@ -77,26 +78,42 @@ const TransactionFormModal: React.FC<{
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "amount" ? parseFloat(value) : value,
+            [name]:
+                name === "amount"
+                    ? value === ""
+                        ? ""
+                        : parseFloat(value)
+                    : value,
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (selectedTransaction) {
-            dispatch(
-                editTransaction({
-                    id: selectedTransaction.id,
-                    data: {
+
+        try {
+            if (selectedTransaction) {
+                await dispatch(
+                    editTransaction({
+                        id: selectedTransaction.id,
+                        data: {
+                            ...formData,
+                            type: formData.type as "income" | "expense",
+                        },
+                    })
+                );
+            } else {
+                await dispatch(
+                    createTransaction({
                         ...formData,
-                        type: formData.type as "expense" | "income",
-                    },
-                })
-            );
-        } else {
-            dispatch(addTransaction({ ...formData }));
+                        type: formData.type as "income" | "expense",
+                    })
+                );
+            }
+            await dispatch(fetchTransactions());
+            onClose();
+        } catch (err) {
+            console.error("Failed to save transaction", err);
         }
-        onClose();
     };
 
     const handleDelete = () => {

@@ -11,23 +11,16 @@ const RecentTransactions: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { transactions, hasMore, status, error } = useSelector(
+    const { transactions, status, error } = useSelector(
         (state: RootState) => state.transactions
     );
 
-    const [page, setPage] = useState(1);
-    const limit = 10;
-
     useEffect(() => {
-        dispatch(fetchTransactions({ page, limit }));
+        dispatch(fetchTransactions());
         return () => {
             dispatch(resetTransactions());
         };
-    }, [dispatch, page]);
-
-    const handleLoadMore = () => {
-        setPage((prev) => prev + 1);
-    };
+    }, [dispatch]);
 
     // To open for add
     const handleAdd = () => {
@@ -111,67 +104,71 @@ const RecentTransactions: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white">
-                                {transactions.map((transaction) => (
-                                    <tr
-                                        key={transaction.id}
-                                        className="even:bg-gray-50"
-                                    >
-                                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
-                                            {transaction.category}
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            $
-                                            {Number(
-                                                transaction.amount
-                                            ).toLocaleString("en-US", {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2,
-                                            })}
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {transaction.type}
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {new Date(
-                                                transaction.date
-                                            ).toLocaleDateString("en-US")}
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {transaction.description}.
-                                        </td>
-
-                                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-                                            <a
-                                                href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    handleEdit(transaction);
-                                                }}
-                                                className="text-indigo-600 hover:text-indigo-900"
-                                            >
-                                                Edit
-                                            </a>
+                                {!transactions || transactions.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan="6"
+                                            className="text-center py-4 text-gray-500"
+                                        >
+                                            No transactions available.
                                         </td>
                                     </tr>
-                                ))}
+                                ) : (
+                                    transactions.map((transaction) => (
+                                        <tr
+                                            key={transaction.id}
+                                            className="even:bg-gray-50"
+                                        >
+                                            <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3">
+                                                {transaction.category}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                $
+                                                {Number(
+                                                    transaction.amount
+                                                ).toLocaleString("en-US", {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2,
+                                                })}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                {transaction.type}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                {new Date(
+                                                    transaction.date
+                                                ).toLocaleDateString("en-US")}
+                                            </td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                {transaction.description}.
+                                            </td>
+
+                                            <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+                                                <a
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handleEdit(transaction);
+                                                    }}
+                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                >
+                                                    Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div className="flex justify-center mt-6">
-                {status === "loading" && page > 1 ? (
+                {status === "loading" ? (
                     <p className="text-gray-500">Loading more...</p>
-                ) : hasMore ? (
-                    <button
-                        onClick={handleLoadMore}
-                        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
-                    >
-                        Load More
-                    </button>
                 ) : (
                     <p className="text-gray-500">
-                        No more transactions to load.
+                        All transactions are loaded.
                     </p>
                 )}
             </div>

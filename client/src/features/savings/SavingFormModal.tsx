@@ -13,9 +13,7 @@ import { Saving } from "../../types/type";
 const SavingFormModal: React.FC<{
     onClose: () => void;
     selectedSaving: Saving | null;
-    page: number;
-    limit: number;
-}> = ({ onClose, selectedSaving, page, limit }) => {
+}> = ({ onClose, selectedSaving }) => {
     const dispatch = useDispatch<AppDispatch>();
     const userId = useSelector((state: RootState) => state.auth.user?.id);
     const [formData, setFormData] = useState({
@@ -74,7 +72,7 @@ const SavingFormModal: React.FC<{
         }
         // After mutation, refresh
         dispatch(clearSavings());
-        dispatch(fetchSavingsThunk({ page, limit }));
+        dispatch(fetchSavingsThunk());
         onClose();
     };
 
