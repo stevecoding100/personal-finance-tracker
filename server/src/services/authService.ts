@@ -15,7 +15,11 @@ export const registerUser = async (
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await createUser({ name, email, password: hashedPassword });
 
-    const token = createToken({ id: user.id, email: user.email });
+    const token = createToken({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+    });
 
     // Remove password before returning
     const { password: _pw, ...safeUser } = user;
@@ -34,7 +38,11 @@ export const loginUser = async (email: string, password: string) => {
         throw new Error("Invalid email or password");
     }
 
-    const token = createToken({ id: user.id, email: user.email });
+    const token = createToken({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+    });
 
     // Remove password before returning
     const { password: _pw, ...safeUser } = user;

@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "ts-node src/server.ts",
         "start": "tsc && node dist/server.js",
-        "migrate": "ts-node -r tsconfig-paths/register ./src/knexfile.ts migrate:latest",
+        "build": "tsc",
+        "health-check": "node health-check.js",
+        "migrate": "ts-node -r tsconfig-paths/register ./node_modules/knex/bin/cli.js migrate:latest --knexfile ./knexfile.ts",
         "rollback": "ts-node -r tsconfig-paths/register ./node_modules/knex/bin/cli.js --knexfile ./src/knexfile.ts migrate:rollback"
     },
     "keywords": [],
@@ -28,12 +30,15 @@
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
+        "cors": "^2.8.5",
         "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
         "knex": "^3.1.0",
         "morgan": "^1.10.0",
         "nodemon": "^3.1.10",
         "pg": "^8.15.6",
-        "redis": "^5.0.0",
+        "redis": "^5.0.1",
         "ts-node": "^10.9.2"
     }
 }

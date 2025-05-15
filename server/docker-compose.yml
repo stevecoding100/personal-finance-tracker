@@ -1,0 +1,39 @@
+services:
+    finance-backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - .:/app
+        container_name: finance-backend
+        working_dir: /app
+
+        ports:
+            - "3000:3000"
+        depends_on:
+            - finance-postgres
+            - finance-redis
+        environment:
+            - NODE_ENV=development
+            # - DATABASE_URL=postgres://postgres:new_secure_password@finance-postgres:5432/personal_finance
+            - DATABASE_URL=postgres://postgres:new_secure_password@finance-db.c9mgcgg8cmnr.us-east-2.rds.amazonaws.com:5432/personal_finance
+            - REDIS_URL=redis://finance-redis:6379
+
+    finance-postgres:
+        image: postgres:15
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: new_secure_password
+            POSTGRES_DB: personal_finance
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+    finance-redis:
+        image: redis:7.4.3
+        ports:
+            - "6379:6379"
+
+volumes:
+    pgdata:

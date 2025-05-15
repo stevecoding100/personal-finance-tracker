@@ -11,10 +11,6 @@ export const config = {
         port: Number(process.env.DB_PORT),
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME || "personal_finance",
-    },
-    jwt: {
-        secret: process.env.JWT_SECRET as string,
-        expiresIn: "7d" as const,
+        database: process.env.DB_NAME,
     },
 };
