@@ -1,38 +1,36 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     fetchBudgetsThunk,
-    clearBudgets,
+    clearBudget,
 } from "../../features/budgets/budgetSlice";
-import { Budget } from "@/types/type";
-
 import type { RootState, AppDispatch } from "../../store/store";
 import BudgetFormModal from "./BudgetFormModal";
+import { Budget } from "@/types/type";
 
 const RecentBudgets: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
     const dispatch = useDispatch<AppDispatch>();
-    const { budgets, loading, status, error } = useSelector(
+    const { budgets, loading, error } = useSelector(
         (state: RootState) => state.budgets
     );
 
+    console.log(budgets);
     useEffect(() => {
         dispatch(fetchBudgetsThunk());
         return () => {
-            dispatch(clearBudgets());
+            dispatch(clearBudget());
         };
     }, [dispatch]);
 
-    // To open for add
     const handleAdd = () => {
-        setSelectedBudget(null);
+        setSelectedBudget(null); // creating new budget
         setIsModalOpen(true);
     };
 
-    // To open for edit
-    const handleEdit = (budget: any) => {
-        setSelectedBudget(budget);
+    const handleEdit = (budget: Budget) => {
+        setSelectedBudget(budget); // editing existing budget
         setIsModalOpen(true);
     };
     return (
@@ -55,11 +53,14 @@ const RecentBudgets: React.FC = () => {
                     </button>
                 </div>
             </div>
-            {status === "loading" && (
+            {loading && (
                 <p className="text-gray-500 text-sm mt-4">Loading...</p>
             )}
             {error && (
-                <p className="text-red-500 text-sm mt-4">Error: {error}</p>
+                <p className="text-red-500 text-sm mt-4">No budgets found</p>
+            )}
+            {!loading && budgets.length === 0 && (
+                <p className="text-red-500 text-sm mt-4">No budgets found</p>
             )}
             <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

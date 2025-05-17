@@ -4,9 +4,9 @@ import {
     updateBudgetThunk,
     deleteBudgetThunk,
     createBudgetThunk,
-    clearBudgets,
     fetchBudgetsThunk,
-} from "../budgets/budgetSlice";
+    clearBudget,
+} from "../../features/budgets/budgetSlice";
 import type { AppDispatch, RootState } from "../../store/store";
 import { Budget } from "../../types/type";
 
@@ -62,7 +62,10 @@ const BudgetFormModal: React.FC<{
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "amount" ? parseFloat(value) : value,
+            [name]:
+                name === "target_amount" || name === "current_amount"
+                    ? parseFloat(value)
+                    : value,
         }));
     };
 
@@ -87,8 +90,8 @@ const BudgetFormModal: React.FC<{
         } else {
             await dispatch(createBudgetThunk(payload));
         }
-        // After mutation, refresh
-        dispatch(clearBudgets());
+        // Just re-fetch the updated budgets
+        dispatch(clearBudget());
         dispatch(fetchBudgetsThunk());
         onClose();
     };

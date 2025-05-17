@@ -17,6 +17,7 @@ const RecentSavings: React.FC = () => {
         (state: RootState) => state.savings
     );
 
+    console.log("Savings:", savings);
     useEffect(() => {
         dispatch(fetchSavingsThunk());
         return () => {

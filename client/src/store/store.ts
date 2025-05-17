@@ -12,12 +12,11 @@ export const store = configureStore({
     },
 });
 
-const token = localStorage.getItem("token");
 const storedUser = localStorage.getItem("user");
 
-if (token && storedUser) {
+if (storedUser) {
     const user = JSON.parse(storedUser);
-    store.dispatch(setUser({ ...user, token }));
+    store.dispatch(setUser(user));
 }
 export default store;
 export type RootState = ReturnType<typeof store.getState>;

@@ -61,7 +61,7 @@ const TransactionFormModal: React.FC<{
     useEffect(() => {
         if (selectedTransaction) {
             setFormData({
-                category: selectedTransaction.category,
+                category: selectedTransaction.category.toString(),
                 amount: selectedTransaction.amount,
                 type: selectedTransaction.type,
                 date: new Date(selectedTransaction.date)
@@ -78,12 +78,7 @@ const TransactionFormModal: React.FC<{
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]:
-                name === "amount"
-                    ? value === ""
-                        ? ""
-                        : parseFloat(value)
-                    : value,
+            [name]: name === "amount" ? value : value,
         }));
     };
 
@@ -180,7 +175,6 @@ const TransactionFormModal: React.FC<{
                     <label className="block text-sm font-medium">Amount</label>
                     <input
                         name="amount"
-                        type="number"
                         value={formData.amount}
                         onChange={handleChange}
                         required

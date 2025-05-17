@@ -301,7 +301,7 @@ export default function Dashboard() {
                                                 aria-hidden="true"
                                                 className="ml-4 text-sm/6 font-semibold text-gray-900"
                                             >
-                                                {user.name}
+                                                {user?.name}
                                             </span>
                                             <ChevronDownIcon
                                                 aria-hidden="true"

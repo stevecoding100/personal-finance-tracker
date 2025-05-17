@@ -6,22 +6,23 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Link } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { fetchTransactions } from "../services/api/transactionAPI";
 import { fetchGoals } from "../services/api/savingAPI";
 import { fetchBudgets } from "../services/api/budgetAPI";
-import BarChart from "./Barchart";
-function classNames(...classes) {
+import BarChart from "./BarChart";
+import { Saving, Transaction, Budget } from "@/types/type";
+function classNames(...classes: (string | boolean | null | undefined)[]) {
     return classes.filter(Boolean).join(" ");
 }
 
 export default function Carddata() {
     const user = useSelector((state: RootState) => state.auth.user);
-    const [transactions, setTransactions] = useState([]);
-    const [goals, setGoals] = useState([]);
-    const [budgets, setBudgets] = useState([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [goals, setGoals] = useState<Saving[]>([]);
+    const [budgets, setBudgets] = useState<Budget[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -55,14 +56,15 @@ export default function Carddata() {
 
     // Compute total balance
     const incomeTotal = transactions
-        .filter((tx) => tx.type === "income")
-        .reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
+        .filter((tx: Transaction) => tx.type === "income")
+        .reduce((sum: number, tx: Transaction) => sum + Number(tx.amount), 0);
 
     const expenseTotal = transactions
-        .filter((tx) => tx.type === "expense")
-        .reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
+        .filter((tx: Transaction) => tx.type === "expense")
+        .reduce((sum: number, tx: Transaction) => sum + Number(tx.amount), 0);
 
     const balance = incomeTotal - expenseTotal;
+    console.log(balance);
 
     // Determine if the most recent transaction was income or expense
     const isIncome = mostRecentTx?.type === "income";
@@ -71,17 +73,15 @@ export default function Carddata() {
         : mostRecentTx
         ? "decrease"
         : "";
-    const changeAmount = parseFloat(mostRecentTx?.amount || "0");
+    const changeAmount = mostRecentTx?.amount ?? 0;
 
-    const totalBudgetCurrent = budgets.reduce(
-        (sum, b) => sum + (parseFloat(b?.amount ?? "0") || 0),
-        0
-    );
+    const totalBudgetCurrent = Array.isArray(budgets)
+        ? budgets.reduce((sum, b) => sum + Number(b?.amount || 0), 0)
+        : 0;
 
-    const totalGoalCurrent = goals.reduce(
-        (sum, g) => sum + (parseFloat(g?.current_amount ?? "0") || 0),
-        0
-    );
+    const totalGoalCurrent = Array.isArray(goals)
+        ? goals.reduce((sum, g) => sum + Number(g?.current_amount || 0), 0)
+        : 0;
 
     const stats = [
         {
@@ -92,14 +92,14 @@ export default function Carddata() {
                 maximumFractionDigits: 2,
             })}`,
             icon: CurrencyDollarIcon,
-            change: `$${changeAmount.toFixed(2)}`,
+            change: `$${changeAmount}`,
             changeType: changeDirection,
             link: "/dashboard/transactions",
         },
         {
             id: 2,
             name: "Total Budget",
-            stat: `$${totalBudgetCurrent.toFixed(2)} `,
+            stat: `$${totalBudgetCurrent} `,
             icon: CalculatorIcon,
             change: "",
             changeType: "",
@@ -118,11 +118,15 @@ export default function Carddata() {
 
     // Example dataset from goals
     const goalLabels = goals.map((goal) => goal.title);
-    const goalValues = goals.map((goal) => parseFloat(goal.current_amount));
+    const goalValues = goals.map((goal) => goal.current_amount);
 
     // Example dataset from budgets
-    const budgetLabels = budgets.map((b) => b.category);
-    const budgetValues = budgets.map((b) => parseFloat(b.amount));
+    const budgetLabels = Array.isArray(budgets)
+        ? budgets.map((b) => b.category)
+        : [];
+    const budgetValues = Array.isArray(budgets)
+        ? budgets.map((b) => b.amount)
+        : [];
 
     return (
         <div className="p-4">

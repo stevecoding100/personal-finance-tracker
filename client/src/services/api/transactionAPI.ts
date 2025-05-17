@@ -8,7 +8,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const createTransactionAPI = async (data: Omit<Transaction, "id">) => {
     const res = await authorizedFetch(`${API_URL}/transaction/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to create transaction");
@@ -34,7 +33,6 @@ export const updateTransaction = async (
 ) => {
     const res = await authorizedFetch(`${API_URL}/transaction/update/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update transaction");

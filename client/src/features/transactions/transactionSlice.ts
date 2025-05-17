@@ -27,11 +27,11 @@ const initialState: TransactionsState = {
 // Async thunks
 export const fetchTransactions = createAsyncThunk(
     "transactions/fetchTransactions",
-    async (thunkAPI) => {
+    async (_, thunkAPI) => {
         try {
             return await fetchTransactionsAPI();
         } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue((error as Error).message);
         }
     }
 );

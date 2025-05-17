@@ -1,6 +1,5 @@
 import { authorizedFetch } from "../../utils/api";
 import { Saving } from "../../types/type";
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Fetch all goals
@@ -23,7 +22,6 @@ export const createGoal = async (
 ): Promise<Saving> => {
     const res = await authorizedFetch(`${API_URL}/goal/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(goal),
     });
     if (!res.ok) throw new Error("Failed to create goal");
@@ -37,7 +35,6 @@ export const updateGoal = async (
 ): Promise<Saving> => {
     const res = await authorizedFetch(`${API_URL}/goal/update/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error("Failed to update goal");

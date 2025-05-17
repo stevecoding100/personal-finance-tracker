@@ -1,142 +1,129 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-    createBudget,
     fetchBudgets,
+    createBudget,
     updateBudget,
     deleteBudget,
 } from "../../services/api/budgetAPI";
 import { Budget } from "../../types/type";
 
-// Async thunks
+// Thunks
 export const fetchBudgetsThunk = createAsyncThunk(
     "budgets/fetchAll",
-    async () => {
-        const data = await fetchBudgets();
-        return data as Budget[];
+    async (_, { rejectWithValue }) => {
+        try {
+            const data = await fetchBudgets();
+            return data as Budget[];
+        } catch (err: any) {
+            return rejectWithValue(err.message);
+        }
     }
 );
 
-// Thunk to create a new budget
 export const createBudgetThunk = createAsyncThunk(
     "budgets/create",
     async (
-        newBudget: {
-            category: string;
-            amount: number;
-            created_at: string;
-            user_id: number;
-        },
+        newBudget: Omit<Budget, "id" | "created_at" | "updated_at">,
         { rejectWithValue }
     ) => {
         try {
             const data = await createBudget(newBudget);
-
-            return {
-                ...data,
-                created_at: data.created_at,
-            } as Budget;
-        } catch (error: any) {
-            return rejectWithValue(error.message || "Failed to create budget");
+            return data as Budget;
+        } catch (err: any) {
+            return rejectWithValue(err.message);
         }
     }
 );
 
 export const updateBudgetThunk = createAsyncThunk(
     "budgets/update",
-    async ({ id, data }: { id: number; data: Partial<Budget> }) => {
-        const res = await updateBudget(id, data);
-        return res as Budget;
+    async (
+        { id, data }: { id: number; data: Partial<Budget> },
+        { rejectWithValue }
+    ) => {
+        try {
+            const res = await updateBudget(id, data);
+            return res as Budget;
+        } catch (err: any) {
+            return rejectWithValue(err.message);
+        }
     }
 );
 
 export const deleteBudgetThunk = createAsyncThunk(
     "budgets/delete",
-    async (id: number) => {
-        await deleteBudget(id);
-        return id;
+    async (id: number, { rejectWithValue }) => {
+        try {
+            await deleteBudget(id);
+            return id;
+        } catch (err: any) {
+            return rejectWithValue(err.message);
+        }
     }
 );
-// Slice state
-interface BudgetsState {
+
+// Slice
+
+interface BudgetState {
     budgets: Budget[];
-    selectedBudget: Budget | null;
-    status: "idle" | "loading" | "succeeded" | "failed";
+    selected: Budget | null;
+    loading: boolean;
     error: string | null;
-    hasMore: boolean;
 }
 
-const initialState: BudgetsState = {
+const initialState: BudgetState = {
     budgets: [],
-    selectedBudget: null,
-    status: "idle",
+    selected: null,
+    loading: false,
     error: null,
-    hasMore: true,
 };
-// Slice
+
 const budgetSlice = createSlice({
     name: "budgets",
     initialState,
     reducers: {
-        addBudget: (state, action) => {
-            state.budgets.push(action.payload);
-        },
-        selectBudget: (state, action: PayloadAction<Budget | null>) => {
-            state.selectedBudget = action.payload;
-        },
-
-        clearBudgets: (state) => {
+        clearBudget: (state) => {
             state.budgets = [];
-            state.status = "idle";
-            state.hasMore = true;
+            state.selected = null;
+        },
+        selectBudget: (state, action: PayloadAction<Budget>) => {
+            state.selected = action.payload;
         },
     },
     extraReducers: (builder) => {
         builder
-            // Fetch
             .addCase(fetchBudgetsThunk.pending, (state) => {
-                state.status = "loading";
+                state.loading = true;
+                state.error = null;
             })
             .addCase(fetchBudgetsThunk.fulfilled, (state, action) => {
-                state.status = "succeeded";
+                state.loading = false;
                 state.budgets = action.payload;
-                state.hasMore = action.payload.length > 0;
             })
             .addCase(fetchBudgetsThunk.rejected, (state, action) => {
-                state.status = "failed";
-                state.error = action.error.message || "Failed to fetch budgets";
+                state.loading = false;
+                state.error = action.payload as string;
             })
-            // Create
+
             .addCase(createBudgetThunk.fulfilled, (state, action) => {
                 state.budgets.push(action.payload);
             })
-            .addCase(createBudgetThunk.rejected, (state, action) => {
-                state.error = action.error.message || "Failed to create budget";
-            })
-
-            // Update
             .addCase(updateBudgetThunk.fulfilled, (state, action) => {
                 const index = state.budgets.findIndex(
-                    (b) => b.id === action.payload.id
+                    (s) => s.id === action.payload.id
                 );
                 if (index !== -1) {
                     state.budgets[index] = action.payload;
                 }
             })
-            .addCase(updateBudgetThunk.rejected, (state, action) => {
-                state.error = action.error.message || "Failed to update budget";
-            })
-            // Delete
             .addCase(deleteBudgetThunk.fulfilled, (state, action) => {
                 state.budgets = state.budgets.filter(
-                    (b) => b.id !== action.payload
+                    (s) => s.id !== action.payload
                 );
-            })
-            .addCase(deleteBudgetThunk.rejected, (state, action) => {
-                state.error = action.error.message || "Failed to delete budget";
             });
     },
 });
 
-export const { selectBudget, addBudget, clearBudgets } = budgetSlice.actions;
+export const { clearBudget, selectBudget } = budgetSlice.actions;
 
 export default budgetSlice.reducer;
