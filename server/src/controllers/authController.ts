@@ -12,8 +12,15 @@ export const registerController = async (
             req.body.email,
             req.body.password
         );
-        res.status(201).json(result);
+        const { user, token } = result;
+        res.status(201).json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            token,
+        });
     } catch (err: any) {
+        console.error("Register Error:", err.message);
         res.status(400).json({ error: err.message });
     }
 };

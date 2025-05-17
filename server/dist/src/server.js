@@ -14,6 +14,8 @@ const budgetRoutes_1 = __importDefault(require("./routes/budgetRoutes"));
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
 const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
 const test_1 = __importDefault(require("./routes/test"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));

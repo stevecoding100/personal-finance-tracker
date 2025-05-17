@@ -42,9 +42,16 @@ const redisClient_1 = __importDefault(require("../config/redisClient"));
 const registerController = async (req, res) => {
     try {
         const result = await authService.registerUser(req.body.name, req.body.email, req.body.password);
-        res.status(201).json(result);
+        const { user, token } = result;
+        res.status(201).json({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            token,
+        });
     }
     catch (err) {
+        console.error("Register Error:", err.message);
         res.status(400).json({ error: err.message });
     }
 };
@@ -101,12 +108,3 @@ const getMeController = async (req, res) => {
     }
 };
 exports.getMeController = getMeController;
-// export const logoutController = async (req: Request, res: Response) => {
-//     const token = req.token; // You'll need a middleware to attach `token` to `req`
-//     if (!token) {
-//         return res.status(400).json({ error: "Token missing" });
-//     }
-//     // Blacklist token in Redis
-//     await redisClient.set(`blacklist:${token}`, 'true', { EX: 3600 }); // 1 hour
-//     res.status(200).json({ message: "Logged out successfully" });
-// };

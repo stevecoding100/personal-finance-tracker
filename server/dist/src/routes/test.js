@@ -17,4 +17,7 @@ router.get("/redis-test", async (req, res) => {
         res.status(500).json({ success: false, error: "Redis test failed" });
     }
 });
+router.get("/ping", (req, res) => {
+    res.json({ message: "pong" });
+});
 exports.default = router;

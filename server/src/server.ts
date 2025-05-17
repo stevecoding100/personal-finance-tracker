@@ -9,9 +9,13 @@ import budgetRoutes from "./routes/budgetRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import redisTestRoutes from "./routes/test";
+import dotenv from "dotenv";
+
+dotenv.config();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
+
 app.use(
     cors({
         origin: "*", // Allow all origins

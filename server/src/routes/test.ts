@@ -14,4 +14,8 @@ router.get("/redis-test", async (req, res) => {
     }
 });
 
+router.get("/ping", (req, res) => {
+    res.json({ message: "pong" });
+});
+
 export default router;
