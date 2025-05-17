@@ -79,15 +79,3 @@ export const getMeController = async (
         res.status(401).json({ error: err.message });
     }
 };
-// export const logoutController = async (req: Request, res: Response) => {
-//     const token = req.token; // You'll need a middleware to attach `token` to `req`
-
-//     if (!token) {
-//         return res.status(400).json({ error: "Token missing" });
-//     }
-
-//     // Blacklist token in Redis
-//     await redisClient.set(`blacklist:${token}`, 'true', { EX: 3600 }); // 1 hour
-
-//     res.status(200).json({ message: "Logged out successfully" });
-// };

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as budgetService from "../services/budgetService";
+import * as budgetModel from "../models/budgetModel";
 
 import { getOrSetCache, invalidateCache } from "../utils/cache";
 
@@ -11,7 +11,7 @@ export const createBudgetController = async (
     res: Response
 ) => {
     try {
-        const budget = await budgetService.createBudget({
+        const budget = await budgetModel.createBudget({
             ...req.body,
             user_id: req.user!.id,
         });
@@ -31,8 +31,9 @@ export const getBudgetsController = async (
     const cacheKey = `budgets:user:${userId}`;
     try {
         const budgets = await getOrSetCache(cacheKey, 3600, () =>
-            budgetService.getBudgetById(userId)
+            budgetModel.getBudgetsByUser(userId)
         );
+
         res.status(200).json(budgets);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
@@ -44,7 +45,7 @@ export const updateBudgetController = async (
     res: Response
 ) => {
     try {
-        const updatedBudget = await budgetService.updateBudget(
+        const updatedBudget = await budgetModel.updateBudget(
             Number(req.params.id),
             req.body
         );
@@ -60,7 +61,7 @@ export const deleteBudgetController = async (
     res: Response
 ) => {
     try {
-        await budgetService.deleteBudget(Number(req.params.id));
+        await budgetModel.deleteBudget(Number(req.params.id));
         await invalidateCache(`budgets:user:${req.user!.id}`); // Invalidate cache
         res.status(200).json({ message: "Budget deleted successfully" });
     } catch (err: any) {

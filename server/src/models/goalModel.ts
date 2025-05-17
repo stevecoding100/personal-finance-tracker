@@ -7,6 +7,8 @@ export interface Goal {
     current_amount: number;
     title: string;
     target_date: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 // Create a goal
