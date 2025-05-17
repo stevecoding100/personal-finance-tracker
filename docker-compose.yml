@@ -1,0 +1,46 @@
+services:
+    backend:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        volumes:
+            - ./server:/app
+        container_name: finance-backend
+        working_dir: /app
+        ports:
+            - "3000:3000"
+        depends_on:
+            - postgres
+            - redis
+        env_file:
+            - ./server/.env
+    frontend:
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        container_name: finance-frontend
+        ports:
+            - "80:80"
+        depends_on:
+            - backend
+
+    postgres:
+        image: postgres:15
+        container_name: finance-postgres
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: new_secure_password
+            POSTGRES_DB: personal_finance
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+    redis:
+        image: redis:7.4.3
+        container_name: finance-redis
+        ports:
+            - "6379:6379"
+
+volumes:
+    pgdata:
