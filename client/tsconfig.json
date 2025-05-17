@@ -5,6 +5,11 @@
         { "path": "./tsconfig.node.json" }
     ],
     "compilerOptions": {
+        "types": ["node"],
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "target": "ESNext",
         "baseUrl": "src",
         "paths": {
             "@/*": ["./*"]

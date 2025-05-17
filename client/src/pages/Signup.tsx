@@ -17,8 +17,8 @@ const Signup = () => {
         e.preventDefault();
         setError("");
         try {
-            const data = await register(name, email, password);
-            dispatch(setUser(data));
+            const user = await register(name, email, password);
+            dispatch(setUser(user));
             navigate("/dashboard");
         } catch (err) {
             console.log(err);
@@ -107,7 +107,7 @@ const Signup = () => {
                 <p className="mt-10 text-center text-sm text-gray-500">
                     Already have an account?{" "}
                     <a
-                        href="/login"
+                        href="/"
                         className="font-semibold text-[#329D9C]  hover:text-[#56C596]"
                     >
                         Sign in

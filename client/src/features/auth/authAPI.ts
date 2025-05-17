@@ -3,7 +3,7 @@ import { authorizedFetch } from "../../utils/api";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const login = async (email: string, password: string) => {
-    const res = await authorizedFetch(`${API_URL}/auth/login`, {
+    const res = await authorizedFetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({ email, password }),
     });
@@ -25,7 +25,7 @@ export const register = async (
     email: string,
     password: string
 ) => {
-    const res = await authorizedFetch(`${API_URL}/auth/register`, {
+    const res = await authorizedFetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         body: JSON.stringify({ name, email, password }),
     });
