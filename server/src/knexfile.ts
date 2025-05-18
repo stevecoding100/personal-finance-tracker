@@ -12,7 +12,7 @@ const knexConfig: { [key: string]: Knex.Config } = {
             port: config.db.port,
             user: config.db.user,
             password: config.db.password,
-            database: config.db.database || "personal_finance",
+            database: config.db.database,
         },
         migrations: {
             directory: "./db/migrations",
