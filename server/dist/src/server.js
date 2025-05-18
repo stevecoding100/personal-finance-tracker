@@ -19,7 +19,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
 app.use(cors({
-    origin: "*", // Allow all origins
+    origin: "https://personal-finance-tracker-lemon-three.vercel.app",
+    // origin: "*", // Allow all origins
     methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
     allowedHeaders: "Content-Type, Authorization",
 }));
