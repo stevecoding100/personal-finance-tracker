@@ -1,12 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const redis_1 = require("redis");
+import { createClient } from "redis";
+
 const redisUrl = process.env.REDIS_URL;
-const redisClient = (0, redis_1.createClient)({
+
+const redisClient = createClient({
     url: redisUrl,
 });
+
 redisClient.on("error", (err) => console.error("Redis Client Error", err));
+
 (async () => {
     await redisClient.connect();
 })();
-exports.default = redisClient;
+
+export default redisClient;

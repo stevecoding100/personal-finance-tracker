@@ -14,7 +14,7 @@ const knexConfig = {
             port: config_1.config.db.port,
             user: config_1.config.db.user,
             password: config_1.config.db.password,
-            database: config_1.config.db.database || "personal_finance",
+            database: config_1.config.db.database,
         },
         migrations: {
             directory: "./db/migrations",
