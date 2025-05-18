@@ -27,10 +27,8 @@ services:
     postgres:
         image: postgres:15
         container_name: finance-postgres
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: new_secure_password
-            POSTGRES_DB: personal_finance
+        env_file:
+            - ./server/.env
         volumes:
             - pgdata:/var/lib/postgresql/data
         ports:
