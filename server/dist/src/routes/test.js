@@ -1,23 +1,19 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const redisClient_1 = __importDefault(require("../config/redisClient"));
-const router = (0, express_1.Router)();
-router.get("/redis-test", async (req, res) => {
-    try {
-        await redisClient_1.default.set("test-key", "Hello Redis!", { EX: 60 });
-        const value = await redisClient_1.default.get("test-key");
-        res.json({ success: true, message: value });
-    }
-    catch (err) {
-        console.error("Redis error:", err);
-        res.status(500).json({ success: false, error: "Redis test failed" });
-    }
-});
-router.get("/ping", (req, res) => {
-    res.json({ message: "pong" });
-});
-exports.default = router;
+// // routes/test.ts
+// import express from "express";
+// import redisClient from "../utils/redisClient";
+// const router = express.Router();
+// router.get("/redis-test", async (_req, res) => {
+//     if (!redisClient) {
+//         return res.status(503).json({ message: "Redis not available" });
+//     }
+//     try {
+//         await redisClient.set("test-key", "Redis is working!");
+//         const value = await redisClient.get("test-key");
+//         return res.json({ message: "Redis says:", value });
+//     } catch (error) {
+//         console.error("Redis error:", error);
+//         return res.status(500).json({ error: "Redis error" });
+//     }
+// });
+// export default router;

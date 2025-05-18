@@ -1,21 +1,22 @@
-import { Router } from "express";
-import redis from "../config/redisClient";
+// // routes/test.ts
+// import express from "express";
+// import redisClient from "../utils/redisClient";
 
-const router = Router();
+// const router = express.Router();
 
-router.get("/redis-test", async (req, res) => {
-    try {
-        await redis.set("test-key", "Hello Redis!", { EX: 60 });
-        const value = await redis.get("test-key");
-        res.json({ success: true, message: value });
-    } catch (err) {
-        console.error("Redis error:", err);
-        res.status(500).json({ success: false, error: "Redis test failed" });
-    }
-});
+// router.get("/redis-test", async (_req, res) => {
+//     if (!redisClient) {
+//         return res.status(503).json({ message: "Redis not available" });
+//     }
 
-router.get("/ping", (req, res) => {
-    res.json({ message: "pong" });
-});
+//     try {
+//         await redisClient.set("test-key", "Redis is working!");
+//         const value = await redisClient.get("test-key");
+//         return res.json({ message: "Redis says:", value });
+//     } catch (error) {
+//         console.error("Redis error:", error);
+//         return res.status(500).json({ error: "Redis error" });
+//     }
+// });
 
-export default router;
+// export default router;

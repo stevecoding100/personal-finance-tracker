@@ -8,7 +8,7 @@ import authRoutes from "./routes/authRoutes";
 import budgetRoutes from "./routes/budgetRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
-import redisTestRoutes from "./routes/test";
+
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,7 +28,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/goal", goalRoutes);
 app.use("/api/transaction", transactionRoutes);
-app.use("/api", redisTestRoutes);
 
 app.listen(3000, () => {
     console.log("App is running on port 3000");
