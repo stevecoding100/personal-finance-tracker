@@ -3,7 +3,7 @@ import { knexConfig } from "../config/config";
 import dotenv from "dotenv";
 dotenv.config();
 
-const environment = process.env.NODE_ENV as any;
+const environment = process.env.NODE_ENV || "development";
 const config = knexConfig[environment];
 
 if (!config) {
