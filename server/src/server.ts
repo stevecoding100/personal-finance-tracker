@@ -8,7 +8,7 @@ import authRoutes from "./routes/authRoutes";
 import budgetRoutes from "./routes/budgetRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
-
+import { config } from "./config/config";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -32,6 +32,10 @@ app.use("/api/transaction", transactionRoutes);
 
 app.listen(3000, () => {
     console.log("App is running on port 3000");
+});
+
+app.listen(config.app.port, () => {
+    console.log(`Server running on port ${config.app.port}`);
 });
 
 export default app;

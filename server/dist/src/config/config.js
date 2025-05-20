@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.config = void 0;
+exports.knexConfig = exports.config = void 0;
 const dotenv = require("dotenv");
 dotenv.config();
 exports.config = {
@@ -14,5 +14,34 @@ exports.config = {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
+        dev_url: process.env.DEV_DATABASE_URL,
+        prod_url: process.env.PROD_DATABASE_URL,
     },
 };
+console.log(exports.config.db.dev_url);
+exports.knexConfig = {
+    development: {
+        client: "pg",
+        connection: exports.config.db.dev_url,
+        migrations: {
+            directory: "./db/migrations",
+            extension: "ts",
+        },
+    },
+    production: {
+        client: "pg",
+        connection: exports.config.db.prod_url,
+        version: "15.3",
+        migrations: {
+            directory: "./db/migrations",
+        },
+    },
+};
+// {
+//     connectionString: config.db.dev_url,
+//     host: config.db.host,
+//     port: config.db.port,
+//     user: config.db.user,
+//     password: config.db.password,
+//     database: config.db.database,
+// },

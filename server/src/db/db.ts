@@ -1,9 +1,9 @@
 import knex from "knex";
+import { knexConfig } from "../config/config";
+import dotenv from "dotenv";
+dotenv.config();
 
-const environment = process.env.NODE_ENV || "development";
-
-const knexConfig = require("../knexfile");
-
+const environment = process.env.NODE_ENV as any;
 const config = knexConfig[environment];
 
 if (!config) {

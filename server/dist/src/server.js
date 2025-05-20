@@ -13,6 +13,7 @@ const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const budgetRoutes_1 = __importDefault(require("./routes/budgetRoutes"));
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
 const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
+const config_1 = require("./config/config");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 app.use(express.urlencoded({ extended: false }));
@@ -30,5 +31,8 @@ app.use("/api/goal", goalRoutes_1.default);
 app.use("/api/transaction", transactionRoutes_1.default);
 app.listen(3000, () => {
     console.log("App is running on port 3000");
+});
+app.listen(config_1.config.app.port, () => {
+    console.log(`Server running on port ${config_1.config.app.port}`);
 });
 exports.default = app;
