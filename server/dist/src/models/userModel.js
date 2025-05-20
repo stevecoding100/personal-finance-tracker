@@ -34,6 +34,7 @@ const getUserByEmail = async (email) => {
         return user;
     }
     catch (error) {
+        console.error(">>> getUserByEmail error:", error);
         throw new Error(`Error fetching user by email: ${error.message}`);
     }
 };

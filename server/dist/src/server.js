@@ -20,7 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan("combined"));
 app.use(cors({
-    origin: "https://personal-finance-tracker-lemon-three.vercel.app",
+    origin: ["https://personal-finance-tracker-lemon-three.vercel.app"],
+    credentials: true,
     // origin: "*", // Allow all origins
     methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
     allowedHeaders: "Content-Type, Authorization",
@@ -29,10 +30,8 @@ app.use("/api/auth", authRoutes_1.default);
 app.use("/api/budget", budgetRoutes_1.default);
 app.use("/api/goal", goalRoutes_1.default);
 app.use("/api/transaction", transactionRoutes_1.default);
-app.listen(3000, () => {
-    console.log("App is running on port 3000");
-});
-app.listen(config_1.config.app.port, () => {
-    console.log(`Server running on port ${config_1.config.app.port}`);
+const PORT = config_1.config.app.port || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 exports.default = app;

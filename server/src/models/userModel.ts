@@ -40,6 +40,7 @@ export const getUserByEmail = async (email: string) => {
         const user = await db<User>("users").where("email", email).first();
         return user;
     } catch (error: any) {
+        console.error(">>> getUserByEmail error:", error);
         throw new Error(`Error fetching user by email: ${error.message}`);
     }
 };

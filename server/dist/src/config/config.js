@@ -24,7 +24,7 @@ exports.knexConfig = {
         client: "pg",
         connection: exports.config.db.dev_url,
         migrations: {
-            directory: "./db/migrations",
+            directory: "./src/db/migrations",
             extension: "ts",
         },
     },
@@ -33,7 +33,7 @@ exports.knexConfig = {
         connection: exports.config.db.prod_url,
         version: "15.3",
         migrations: {
-            directory: "./db/migrations",
+            directory: "./src/db/migrations",
         },
     },
 };
