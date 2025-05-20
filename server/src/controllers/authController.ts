@@ -7,11 +7,15 @@ export const registerController = async (
     res: Response
 ): Promise<void> => {
     try {
-        const result = await authService.registerUser(
-            req.body.name,
-            req.body.email,
-            req.body.password
-        );
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            res.status(400).json({
+                error: "Name, email, and password are required.",
+            });
+            return;
+        }
+        const result = await authService.registerUser(name, email, password);
         const { user, token } = result;
         res.status(201).json({
             id: user.id,
@@ -29,8 +33,15 @@ export const loginController = async (
     req: Request,
     res: Response
 ): Promise<void> => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({
+            error: "Wrong email or password.",
+        });
+        return;
+    }
     // Adding a Redis check to limit login attempts per IP or email.s
-    const email = req.body.email;
     const ip = req.ip;
     const key = `login_attempts:${ip}:${email}`;
 
