@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import * as transactionModel from "../models/transactionModel";
-import { getOrSetCache, invalidateCache } from "../utils/cache";
 
 export const createTransactionController = async (
     req: Request,
@@ -11,7 +10,7 @@ export const createTransactionController = async (
             ...req.body,
             user_id: req.user!.id,
         });
-        await invalidateCache(`transactions:user:${req.user!.id}`);
+
         res.status(201).json(transaction);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
@@ -26,9 +25,10 @@ export const getTransactionsController = async (
     const cacheKey = `transactions:user:${userId}`;
 
     try {
-        const transactions = await getOrSetCache(cacheKey, 3600, () =>
-            transactionModel.getTransactionsByUserId(userId)
+        const transactions = await transactionModel.getTransactionsByUserId(
+            userId
         );
+
         res.status(200).json(transactions);
     } catch (err: any) {
         res.status(500).json({ error: err.message });
@@ -55,7 +55,7 @@ export const updateTransactionController = async (
             Number(req.params.id),
             req.body
         );
-        await invalidateCache(`transactions:user:${req.user!.id}`);
+
         res.status(200).json(updatedTransaction);
     } catch (err: any) {
         res.status(400).json({ error: err.message });
@@ -70,7 +70,6 @@ export const deleteTransactionController = async (
         const result = await transactionModel.deleteTransaction(
             Number(req.params.id)
         );
-        await invalidateCache(`transactions:user:${req.user!.id}`);
         res.status(200).json(result);
     } catch (err: any) {
         res.status(400).json({ error: err.message });

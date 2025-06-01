@@ -1,3 +1,9 @@
+export type User = {
+    id: number;
+    name: string;
+    email: string;
+};
+
 export type Transaction = {
     id: number;
     category: string;
@@ -9,7 +15,9 @@ export type Transaction = {
 export type Budget = {
     id: number;
     user_id: number;
-    amount: number;
+    title: string;
+    amount_spent: number;
+    budget_limit: number;
     category: string;
     created_at: string;
     updated_at: string;

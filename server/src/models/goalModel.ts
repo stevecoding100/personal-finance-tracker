@@ -6,9 +6,9 @@ export interface Goal {
     target_amount: number;
     current_amount: number;
     title: string;
-    target_date: Date;
-    created_at?: Date;
-    updated_at?: Date;
+    target_date?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 // Create a goal
@@ -47,11 +47,11 @@ export const getGoalById = async (id: number) => {
 // Update a goal
 export const updateGoal = async (id: number, goalData: Partial<Goal>) => {
     try {
-        const updatedGoal = await db<Goal>("goals")
+        const updated = await db<Goal>("goals")
             .where("id", id)
             .update(goalData)
             .returning("*");
-        return updatedGoal[0];
+        return updated[0];
     } catch (error: any) {
         throw new Error(`Error updating goal: ${error.message}`);
     }

@@ -41,11 +41,11 @@ exports.getGoalById = getGoalById;
 // Update a goal
 const updateGoal = async (id, goalData) => {
     try {
-        const updatedGoal = await (0, db_1.db)("goals")
+        const updated = await (0, db_1.db)("goals")
             .where("id", id)
             .update(goalData)
             .returning("*");
-        return updatedGoal[0];
+        return updated[0];
     }
     catch (error) {
         throw new Error(`Error updating goal: ${error.message}`);

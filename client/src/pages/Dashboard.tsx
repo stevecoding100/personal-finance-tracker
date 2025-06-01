@@ -29,8 +29,8 @@ import {
 } from "@heroicons/react/20/solid";
 
 import { useLocation, Link, Outlet, useNavigate } from "react-router-dom";
-import { signOut } from "../features/auth/authSlice";
-
+import { signOut } from "../store/slices/authSlice";
+import NumoraLogo from "../assets/numora-logo.png";
 const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
     {
@@ -114,10 +114,11 @@ export default function Dashboard() {
                             <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                                 <div className="flex h-16 shrink-0 items-center">
                                     <img
-                                        alt="Your Company"
-                                        src="#"
-                                        className="h-8 w-auto"
+                                        alt="Numora"
+                                        src={NumoraLogo}
+                                        className="h-8 w-auto rounded-full"
                                     />
+                                    <p className="text-white ml-2">Numora</p>
                                 </div>
                                 <nav className="flex flex-1 flex-col">
                                     <ul
@@ -175,10 +176,11 @@ export default function Dashboard() {
                     <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
                         <div className="flex h-16 shrink-0 items-center">
                             <img
-                                alt="Your Company"
-                                src="#"
-                                className="h-8 w-auto"
+                                alt="Numora"
+                                src={NumoraLogo}
+                                className="h-8 w-auto rounded-full"
                             />
+                            <p className="text-white ml-2 text-2xl">Numora</p>
                         </div>
                         <nav className="flex flex-1 flex-col">
                             <ul
@@ -246,7 +248,7 @@ export default function Dashboard() {
                             aria-hidden="true"
                             className="h-6 w-px bg-gray-900/10 lg:hidden"
                         />
-
+                        {/* Search Bar */}
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                             <form
                                 action="#"

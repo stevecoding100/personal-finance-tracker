@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "../features/auth/authSlice";
-import { login } from "../features/auth/authAPI";
+import { setUser } from "../store/slices/authSlice";
+import { login } from "../services/authAPI";
 import { useNavigate } from "react-router-dom";
-
+import NumoraLogo from "../assets/numora-logo.png";
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -28,11 +28,13 @@ const Login = () => {
     return (
         <div className="flex flex-col min-h-full justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                {/* <img
-                    alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                    className="mx-auto h-10 w-auto"
-                /> */}
+                <div className="flex justify-center">
+                    <img
+                        alt="Numora"
+                        src={NumoraLogo}
+                        className="h-12 w-auto rounded-full"
+                    />
+                </div>
                 <h2 className="mt-10 text-center  text-2xl font-bold tracking-tight text-gray-900">
                     Sign in to your account
                 </h2>

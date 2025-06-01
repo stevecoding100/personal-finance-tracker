@@ -11,9 +11,9 @@ const router = Router();
 
 router.use(authenticateToken);
 
-router.post("/create", createBudgetController);
-router.get("/budgets", getBudgetsController);
-router.put("/update/:id", updateBudgetController);
-router.delete("/delete/:id", deleteBudgetController);
+router.post("/create", authenticateToken, createBudgetController);
+router.get("/budgets", authenticateToken, getBudgetsController);
+router.put("/update/:id", authenticateToken, updateBudgetController);
+router.delete("/delete/:id", authenticateToken, deleteBudgetController);
 
 export default router;

@@ -32,13 +32,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMeController = exports.loginController = exports.registerController = void 0;
 const authService = __importStar(require("../services/authService"));
-const redisClient_1 = __importDefault(require("../config/redisClient"));
 const registerController = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -71,20 +67,9 @@ const loginController = async (req, res) => {
         });
         return;
     }
-    // Adding a Redis check to limit login attempts per IP or email.s
-    const ip = req.ip;
-    const key = `login_attempts:${ip}:${email}`;
     try {
-        const attempts = parseInt((await redisClient_1.default.get(key)) || "0");
-        if (attempts >= 5) {
-            res.status(429).json({
-                error: "Too many login attempts. Try again later.",
-            });
-        }
         const result = await authService.loginUser(email, req.body.password);
         const { user, token } = result;
-        // Reset failed attempts on success
-        await redisClient_1.default.del(key);
         res.status(200).json({
             id: user.id,
             name: user.name,
@@ -93,27 +78,17 @@ const loginController = async (req, res) => {
         });
     }
     catch (err) {
-        // Increment attempt count on failure
-        await redisClient_1.default.incr(key);
-        await redisClient_1.default.expire(key, 60 * 5); // 5 min expiration
         res.status(401).json({ error: err.message });
     }
 };
 exports.loginController = loginController;
 const getMeController = async (req, res) => {
-    // Caching the user profile in Redis to reduce DB hits
     try {
         if (!req.user) {
             res.status(401).json({ error: "Unauthorized" });
             return;
         }
-        const cacheKey = `user:${req.user.id}`;
-        const cached = await redisClient_1.default.get(cacheKey);
-        if (cached) {
-            res.status(200).json(JSON.parse(cached));
-        }
         const user = await authService.getUser(req.user.id);
-        await redisClient_1.default.set(cacheKey, JSON.stringify(user), { EX: 3600 }); // cache for 1hr
         res.status(200).json(user);
     }
     catch (err) {

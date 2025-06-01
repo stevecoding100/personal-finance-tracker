@@ -8,18 +8,19 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET;
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).json({ error: "Missing or invalid token" });
+    const token = authHeader?.split(" ")[1];
+    if (!token) {
+        res.sendStatus(401);
         return;
     }
-    const token = authHeader.split(" ")[1];
     try {
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
         req.user = decoded;
         next();
     }
     catch (err) {
-        res.status(403).json({ error: "Invalid token" });
+        res.status(403).json({ error: "Invalid or expired token" });
+        return;
     }
 };
 exports.authenticateToken = authenticateToken;

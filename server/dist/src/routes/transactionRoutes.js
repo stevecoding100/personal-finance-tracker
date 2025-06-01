@@ -5,9 +5,9 @@ const transactionsController_1 = require("../controllers/transactionsController"
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = (0, express_1.Router)();
 router.use(authMiddleware_1.authenticateToken);
-router.post("/create", transactionsController_1.createTransactionController);
-router.get("/transactions", transactionsController_1.getTransactionsController);
-router.get("/transaction/:id", transactionsController_1.getTransactionController);
-router.put("/update/:id", transactionsController_1.updateTransactionController);
-router.delete("/delete/:id", transactionsController_1.deleteTransactionController);
+router.post("/create", authMiddleware_1.authenticateToken, transactionsController_1.createTransactionController);
+router.get("/transactions", authMiddleware_1.authenticateToken, transactionsController_1.getTransactionsController);
+router.get("/transaction/:id", authMiddleware_1.authenticateToken, transactionsController_1.getTransactionController);
+router.put("/update/:id", authMiddleware_1.authenticateToken, transactionsController_1.updateTransactionController);
+router.delete("/delete/:id", authMiddleware_1.authenticateToken, transactionsController_1.deleteTransactionController);
 exports.default = router;

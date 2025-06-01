@@ -35,14 +35,12 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBudgetController = exports.updateBudgetController = exports.getBudgetsController = exports.createBudgetController = void 0;
 const budgetModel = __importStar(require("../models/budgetModel"));
-const cache_1 = require("../utils/cache");
 const createBudgetController = async (req, res) => {
     try {
         const budget = await budgetModel.createBudget({
             ...req.body,
             user_id: req.user.id,
         });
-        await (0, cache_1.invalidateCache)(`budgets:user:${req.user.id}`); // Invalidate cache
         res.status(201).json(budget);
     }
     catch (err) {
@@ -52,9 +50,8 @@ const createBudgetController = async (req, res) => {
 exports.createBudgetController = createBudgetController;
 const getBudgetsController = async (req, res) => {
     const userId = req.user.id;
-    const cacheKey = `budgets:user:${userId}`;
     try {
-        const budgets = await (0, cache_1.getOrSetCache)(cacheKey, 3600, () => budgetModel.getBudgetsByUser(userId));
+        const budgets = await budgetModel.getBudgetsByUser(userId);
         res.status(200).json(budgets);
     }
     catch (err) {
@@ -65,7 +62,6 @@ exports.getBudgetsController = getBudgetsController;
 const updateBudgetController = async (req, res) => {
     try {
         const updatedBudget = await budgetModel.updateBudget(Number(req.params.id), req.body);
-        await (0, cache_1.invalidateCache)(`budgets:user:${req.user.id}`); // Invalidate cache
         res.status(200).json(updatedBudget);
     }
     catch (err) {
@@ -76,7 +72,6 @@ exports.updateBudgetController = updateBudgetController;
 const deleteBudgetController = async (req, res) => {
     try {
         await budgetModel.deleteBudget(Number(req.params.id));
-        await (0, cache_1.invalidateCache)(`budgets:user:${req.user.id}`); // Invalidate cache
         res.status(200).json({ message: "Budget deleted successfully" });
     }
     catch (err) {
