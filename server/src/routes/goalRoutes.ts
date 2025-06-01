@@ -12,10 +12,10 @@ const router = Router();
 
 router.use(authenticateToken);
 
-router.post("/create", createGoalController);
-router.get("/goals", getGoalsController);
-router.get("/goal/:id", getGoalController);
-router.put("/update/:id", updateGoalController);
-router.delete("/delete/:id", deleteGoalController);
+router.post("/create", authenticateToken, createGoalController);
+router.get("/goals", authenticateToken, getGoalsController);
+router.get("/goal/:id", authenticateToken, getGoalController);
+router.put("/update/:id", authenticateToken, updateGoalController);
+router.delete("/delete/:id", authenticateToken, deleteGoalController);
 
 export default router;

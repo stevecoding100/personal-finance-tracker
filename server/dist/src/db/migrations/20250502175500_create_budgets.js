@@ -12,7 +12,9 @@ async function up(knex) {
             .references("id")
             .inTable("users")
             .onDelete("CASCADE");
-        table.decimal("amount").notNullable();
+        table.string("title").notNullable();
+        table.decimal("budget_limit", 10, 2).notNullable().defaultTo(0);
+        table.decimal("amount_spent", 10, 2).notNullable().defaultTo(0);
         table.string("category").notNullable();
         table.timestamp("created_at").defaultTo(knex.fn.now());
         table.timestamp("updated_at").defaultTo(knex.fn.now());

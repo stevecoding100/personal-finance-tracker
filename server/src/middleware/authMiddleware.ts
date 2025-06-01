@@ -23,18 +23,18 @@ export const authenticateToken = (
     next: NextFunction
 ): void => {
     const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).json({ error: "Missing or invalid token" });
+    const token = authHeader?.split(" ")[1];
+    if (!token) {
+        res.sendStatus(401);
         return;
     }
-    const token = authHeader.split(" ")[1];
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
         req.user = decoded;
         next();
     } catch (err) {
-        res.status(403).json({ error: "Invalid token" });
+        res.status(403).json({ error: "Invalid or expired token" });
+        return;
     }
 };

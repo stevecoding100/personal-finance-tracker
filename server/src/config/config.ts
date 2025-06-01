@@ -17,25 +17,30 @@ export const config = {
         prod_url: process.env.PROD_DATABASE_URL,
     },
 };
-console.log(config.db.dev_url);
+
 export const knexConfig: { [key: string]: Knex.Config } = {
     development: {
         client: "pg",
-        connection: config.db.dev_url,
-
+        connection: {
+            host: config.db.host,
+            port: config.db.port,
+            user: config.db.user,
+            password: config.db.password,
+            database: config.db.database,
+        },
         migrations: {
             directory: "./src/db/migrations",
             extension: "ts",
         },
     },
-    production: {
-        client: "pg",
-        connection: config.db.prod_url,
-        version: "15.3",
-        migrations: {
-            directory: "./src/db/migrations",
-        },
-    },
+    // production: {
+    //     client: "pg",
+    //     connection: config.db.prod_url,
+    //     version: "15.3",
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //     },
+    // },
 };
 // {
 //     connectionString: config.db.dev_url,

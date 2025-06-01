@@ -18,24 +18,29 @@ exports.config = {
         prod_url: process.env.PROD_DATABASE_URL,
     },
 };
-console.log(exports.config.db.dev_url);
 exports.knexConfig = {
     development: {
         client: "pg",
-        connection: exports.config.db.dev_url,
+        connection: {
+            host: exports.config.db.host,
+            port: exports.config.db.port,
+            user: exports.config.db.user,
+            password: exports.config.db.password,
+            database: exports.config.db.database,
+        },
         migrations: {
             directory: "./src/db/migrations",
             extension: "ts",
         },
     },
-    production: {
-        client: "pg",
-        connection: exports.config.db.prod_url,
-        version: "15.3",
-        migrations: {
-            directory: "./src/db/migrations",
-        },
-    },
+    // production: {
+    //     client: "pg",
+    //     connection: config.db.prod_url,
+    //     version: "15.3",
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //     },
+    // },
 };
 // {
 //     connectionString: config.db.dev_url,

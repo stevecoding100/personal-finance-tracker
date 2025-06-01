@@ -11,7 +11,6 @@ services:
             - "3000:3000"
         depends_on:
             - postgres
-            - redis
         env_file:
             - ./server/.env
     frontend:
@@ -27,18 +26,16 @@ services:
     postgres:
         image: postgres:15
         container_name: finance-postgres
-        env_file:
-            - ./server/.env
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: new_secure_password
+            POSTGRES_DB: personal_finance
+        # env_file:
+        #     - ./server/.env
         volumes:
             - pgdata:/var/lib/postgresql/data
         ports:
             - "5432:5432"
-
-    redis:
-        image: redis:7.4.3
-        container_name: finance-redis
-        ports:
-            - "6379:6379"
 
 volumes:
     pgdata:

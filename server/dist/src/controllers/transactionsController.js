@@ -35,14 +35,12 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTransactionController = exports.updateTransactionController = exports.getTransactionController = exports.getTransactionsController = exports.createTransactionController = void 0;
 const transactionModel = __importStar(require("../models/transactionModel"));
-const cache_1 = require("../utils/cache");
 const createTransactionController = async (req, res) => {
     try {
         const transaction = await transactionModel.createTransaction({
             ...req.body,
             user_id: req.user.id,
         });
-        await (0, cache_1.invalidateCache)(`transactions:user:${req.user.id}`);
         res.status(201).json(transaction);
     }
     catch (err) {
@@ -54,7 +52,7 @@ const getTransactionsController = async (req, res) => {
     const userId = req.user.id;
     const cacheKey = `transactions:user:${userId}`;
     try {
-        const transactions = await (0, cache_1.getOrSetCache)(cacheKey, 3600, () => transactionModel.getTransactionsByUserId(userId));
+        const transactions = await transactionModel.getTransactionsByUserId(userId);
         res.status(200).json(transactions);
     }
     catch (err) {
@@ -75,7 +73,6 @@ exports.getTransactionController = getTransactionController;
 const updateTransactionController = async (req, res) => {
     try {
         const updatedTransaction = await transactionModel.updateTransaction(Number(req.params.id), req.body);
-        await (0, cache_1.invalidateCache)(`transactions:user:${req.user.id}`);
         res.status(200).json(updatedTransaction);
     }
     catch (err) {
@@ -86,7 +83,6 @@ exports.updateTransactionController = updateTransactionController;
 const deleteTransactionController = async (req, res) => {
     try {
         const result = await transactionModel.deleteTransaction(Number(req.params.id));
-        await (0, cache_1.invalidateCache)(`transactions:user:${req.user.id}`);
         res.status(200).json(result);
     }
     catch (err) {

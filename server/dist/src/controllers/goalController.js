@@ -35,14 +35,12 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteGoalController = exports.updateGoalController = exports.getGoalController = exports.getGoalsController = exports.createGoalController = void 0;
 const goalModel = __importStar(require("../models/goalModel"));
-const cache_1 = require("../utils/cache");
 const createGoalController = async (req, res) => {
     try {
         const goal = await goalModel.createGoal({
             ...req.body,
             user_id: req.user.id,
         });
-        await (0, cache_1.invalidateCache)(`goals:user:${req.user.id}`); // Invalidate cache
         res.status(201).json(goal);
     }
     catch (err) {
@@ -52,9 +50,8 @@ const createGoalController = async (req, res) => {
 exports.createGoalController = createGoalController;
 const getGoalsController = async (req, res) => {
     const userId = req.user.id;
-    const cacheKey = `goals:user:${userId}`;
     try {
-        const goals = await (0, cache_1.getOrSetCache)(cacheKey, 3600, () => goalModel.getGoalsByUserId(userId));
+        const goals = await goalModel.getGoalsByUserId(userId);
         res.status(200).json(goals);
     }
     catch (err) {
@@ -74,8 +71,8 @@ const getGoalController = async (req, res) => {
 exports.getGoalController = getGoalController;
 const updateGoalController = async (req, res) => {
     try {
-        const updatedGoal = await goalModel.updateGoal(Number(req.params.id), req.body);
-        await (0, cache_1.invalidateCache)(`goals:user:${req.user.id}`); // Invalidate cache
+        const id = Number(req.params.id);
+        const updatedGoal = await goalModel.updateGoal(id, req.body);
         res.status(200).json(updatedGoal);
     }
     catch (err) {
@@ -86,7 +83,6 @@ exports.updateGoalController = updateGoalController;
 const deleteGoalController = async (req, res) => {
     try {
         const result = await goalModel.deleteGoal(Number(req.params.id));
-        await (0, cache_1.invalidateCache)(`goals:user:${req.user.id}`); // Invalidate cache
         res.status(200).json(result);
     }
     catch (err) {

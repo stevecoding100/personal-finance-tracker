@@ -1,18 +1,20 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Loader from "./components/Loader";
-
+import { RootState } from "./store/store";
+import { useSelector } from "react-redux";
 import PrivateRoute from "./components/PrivateRoute";
-import RecentTransactions from "./features/transactions/RecenTransactions";
-import Carddata from "./components/Carddata";
-import RecentBudgets from "./features/budgets/RecentBudgets";
-import RecentSavings from "./features/savings/RecentSavings";
+import RecentTransactions from "./features/transactions/components/RecenTransactions";
+import RecentBudgets from "./features/budgets/components/RecentBudgets";
+import RecentSavings from "./features/savings/components/RecentSavings";
+import SummaryCard from "./components/dashboard/SummaryCard";
 
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Login = lazy(() => import("@/pages/Login"));
 const Signup = lazy(() => import("@/pages/Signup"));
 
 const App: React.FC = () => {
+    const user = useSelector((state: RootState) => state.auth.user);
     return (
         <Suspense fallback={<Loader />}>
             <Routes>
@@ -26,7 +28,7 @@ const App: React.FC = () => {
                         </PrivateRoute>
                     }
                 >
-                    <Route path="" element={<Carddata />} />
+                    <Route path="" element={<SummaryCard user={user} />} />
 
                     <Route
                         path="transactions"
