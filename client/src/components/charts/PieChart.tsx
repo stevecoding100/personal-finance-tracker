@@ -39,7 +39,7 @@ const PieChart = ({ month, year }: PieProps) => {
         };
 
         loadData();
-    }, []);
+    }, [month, year]);
 
     if (loading) return <p>Loading chart...</p>;
     if (error) return <p className="text-red-500">{error}</p>;

@@ -55,7 +55,7 @@ export default function SummaryCard({ user }: SummaryProps) {
             />
             <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2">
                 <div className="p-5">
-                    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 w-full">
+                    <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 lg:w-[650px]">
                         <IncomeSummary month={month} year={year} />
                         <ExpenseSummary month={month} year={year} />
                         {/* <SavingSummary /> */}
@@ -72,8 +72,8 @@ export default function SummaryCard({ user }: SummaryProps) {
                     <div className="mb-5 p-2 w-[90%] lg:w-[60%]">
                         <PieChart month={month} year={year} />
                     </div>
-                    <div className="mb-5 p-2 w-[100%] lg:w-[80%] ">
-                        <BarChart />
+                    <div className="mb-5 p-2  lg:w-[80%] w-full">
+                        <BarChart month={month} year={year} />
                     </div>
                 </div>
             </div>

@@ -23,8 +23,12 @@ ChartJS.register(
     BarElement,
     Title
 );
+type BarProps = {
+    month: string;
+    year: string;
+};
 
-const BarChart = () => {
+const BarChart = ({ month, year }: BarProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -33,7 +37,16 @@ const BarChart = () => {
         const loadData = async () => {
             try {
                 const txs = await fetchTransactions();
-                setTransactions(txs);
+                // Filter transactions based on the selected month and year.
+                // Assumes that each transaction has a 'date' property in a format that can be parsed by `new Date()`.
+                const filteredTxs = txs.filter((tx: Transaction) => {
+                    const txDate = new Date(tx.date);
+                    return (
+                        txDate.getMonth() === parseInt(month) &&
+                        txDate.getFullYear() === parseInt(year)
+                    );
+                });
+                setTransactions(filteredTxs);
             } catch (err) {
                 console.error(err);
                 setError("Failed to load transactions.");
@@ -43,7 +56,7 @@ const BarChart = () => {
         };
 
         loadData();
-    }, []);
+    }, [month, year]);
 
     if (loading) return <p>Loading charts...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -61,8 +74,13 @@ const BarChart = () => {
             (categoryTotals[category] || 0) + Number(tx.amount);
     });
 
-    const labels = Object.keys(categoryTotals);
-    const values = Object.values(categoryTotals);
+    // Sort category totals in descending order and take top 7
+    const sortedCategories = Object.entries(categoryTotals)
+        .sort(([, a], [, b]) => b - a) // Sort by amount descending
+        .slice(0, 7); // Keep only the top 7 categories
+
+    const labels = sortedCategories.map(([category]) => category);
+    const values = sortedCategories.map(([, total]) => total);
 
     const barData = {
         labels,

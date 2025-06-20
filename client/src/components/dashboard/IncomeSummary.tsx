@@ -19,22 +19,6 @@ export default function IncomeSummary({ month, year }: IncomeSummaryProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // useEffect(() => {
-    //     const loadTransactionData = async () => {
-    //         try {
-    //             const [txs] = await Promise.all([fetchTransactions()]);
-    //             setTransactions(txs);
-    //         } catch (err) {
-    //             console.error(err);
-    //             setError("Failed to load transactions data.");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     loadTransactionData();
-    // }, []);
-
     useEffect(() => {
         const loadTransactionData = async () => {
             setLoading(true);
@@ -42,7 +26,6 @@ export default function IncomeSummary({ month, year }: IncomeSummaryProps) {
                 // Fetch all transactions from your API
                 const txs = await fetchTransactions();
                 // Filter transactions based on the selected month and year.
-                // Assumes that each transaction has a 'date' property in a format that can be parsed by `new Date()`.
                 const filteredTxs = txs.filter((tx: Transaction) => {
                     const txDate = new Date(tx.date);
                     return (
@@ -106,7 +89,7 @@ export default function IncomeSummary({ month, year }: IncomeSummaryProps) {
             {stats.map((item) => (
                 <div
                     key={item.id}
-                    className="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6"
+                    className="relative overflow-hidden rounded-lg bg-white px-6 pb-12 pt-5 shadow sm:px-5 sm:pt-6"
                 >
                     <dt>
                         <div className="absolute rounded-md bg-indigo-500 p-3">
