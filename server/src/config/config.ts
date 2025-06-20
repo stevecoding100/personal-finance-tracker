@@ -33,14 +33,14 @@ export const knexConfig: { [key: string]: Knex.Config } = {
             extension: "ts",
         },
     },
-    // production: {
-    //     client: "pg",
-    //     connection: config.db.prod_url,
-    //     version: "15.3",
-    //     migrations: {
-    //         directory: "./src/db/migrations",
-    //     },
-    // },
+    production: {
+        client: "pg",
+        connection: config.db.prod_url,
+        version: "15.3",
+        migrations: {
+            directory: "./src/db/migrations",
+        },
+    },
 };
 // {
 //     connectionString: config.db.dev_url,
