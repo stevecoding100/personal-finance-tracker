@@ -18,10 +18,10 @@ app.use(morgan("combined"));
 
 app.use(
     cors({
-        origin: ["https://personal-finance-tracker-lemon-three.vercel.app"],
+        origin: "https://personal-finance-tracker-lemon-three.vercel.app",
         credentials: true,
         // origin: "*", // Allow all origins
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all methods
+        methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
         allowedHeaders: "Content-Type, Authorization",
     })
 );
