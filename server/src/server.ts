@@ -21,11 +21,12 @@ app.use(
         origin: ["https://personal-finance-tracker-lemon-three.vercel.app"],
         credentials: true,
         // origin: "*", // Allow all origins
-        methods: ["GET", "POST", "PUT", "DELETE"], // Allow all methods
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow all methods
         allowedHeaders: "Content-Type, Authorization",
     })
 );
 
+app.options("*", cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/goal", goalRoutes);
