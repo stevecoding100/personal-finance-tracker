@@ -21,13 +21,8 @@ export const config = {
 export const knexConfig: { [key: string]: Knex.Config } = {
     development: {
         client: "pg",
-        connection: {
-            host: config.db.host,
-            port: config.db.port,
-            user: config.db.user,
-            password: config.db.password,
-            database: config.db.database,
-        },
+        connection: config.db.dev_url,
+
         migrations: {
             directory: "./src/db/migrations",
             extension: "ts",
@@ -41,12 +36,26 @@ export const knexConfig: { [key: string]: Knex.Config } = {
             directory: "./src/db/migrations",
         },
     },
+    // development: {
+    //     client: "pg",
+    //     connection: {
+    //         host: config.db.host,
+    //         port: config.db.port,
+    //         user: config.db.user,
+    //         password: config.db.password,
+    //         database: config.db.database,
+    //     },
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //         extension: "ts",
+    //     },
+    // },
+    // production: {
+    //     client: "pg",
+    //     connection: config.db.prod_url,
+    //     version: "15.3",
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //     },
+    // },
 };
-// {
-//     connectionString: config.db.dev_url,
-//     host: config.db.host,
-//     port: config.db.port,
-//     user: config.db.user,
-//     password: config.db.password,
-//     database: config.db.database,
-// },

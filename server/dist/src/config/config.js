@@ -21,13 +21,7 @@ exports.config = {
 exports.knexConfig = {
     development: {
         client: "pg",
-        connection: {
-            host: exports.config.db.host,
-            port: exports.config.db.port,
-            user: exports.config.db.user,
-            password: exports.config.db.password,
-            database: exports.config.db.database,
-        },
+        connection: exports.config.db.dev_url,
         migrations: {
             directory: "./src/db/migrations",
             extension: "ts",
@@ -41,12 +35,26 @@ exports.knexConfig = {
             directory: "./src/db/migrations",
         },
     },
+    // development: {
+    //     client: "pg",
+    //     connection: {
+    //         host: config.db.host,
+    //         port: config.db.port,
+    //         user: config.db.user,
+    //         password: config.db.password,
+    //         database: config.db.database,
+    //     },
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //         extension: "ts",
+    //     },
+    // },
+    // production: {
+    //     client: "pg",
+    //     connection: config.db.prod_url,
+    //     version: "15.3",
+    //     migrations: {
+    //         directory: "./src/db/migrations",
+    //     },
+    // },
 };
-// {
-//     connectionString: config.db.dev_url,
-//     host: config.db.host,
-//     port: config.db.port,
-//     user: config.db.user,
-//     password: config.db.password,
-//     database: config.db.database,
-// },
