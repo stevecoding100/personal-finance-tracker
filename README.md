@@ -1,6 +1,6 @@
 # 💰 Personal Finance Tracker
 
-A full-stack personal finance tracker that helps users manage their income, expenses, savings goals, and budgets — all in one intuitive dashboard. Built with React, Node.js, PostgreSQL, and Docker.
+A full-stack personal finance tracker that helps users manage their income, expenses, savings goals, and budgets — all in one intuitive dashboard. Built with React, Node.js, and PostgreSQL.
 
 ---
 
