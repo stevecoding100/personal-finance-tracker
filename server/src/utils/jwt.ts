@@ -1,17 +1,17 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET!;
 
-interface JWTPayload {
-    id: number;
-    email: string;
-    name: string;
-}
-
-export const createToken = (payload: JWTPayload) => {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+export const generateToken = (userId: string) => {
+    return jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
 };
 
-export const verifyToken = (token: string) => {
-    return jwt.verify(token, JWT_SECRET);
+export const verifyToken = (token: string): { userId: string } => {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    if (typeof decoded === "string" || !("userId" in decoded)) {
+        throw new Error("Invalid token");
+    }
+
+    return decoded as { userId: string };
 };

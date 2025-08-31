@@ -1,73 +1,42 @@
 import { Request, Response } from "express";
-import * as authService from "../services/authService";
+import prisma from "../config/prisma";
+import bcrypt from "bcrypt";
+import { generateToken } from "../utils/jwt";
 
-export const registerController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const register = async (req: Request, res: Response) => {
+    const { name, email, password } = req.body;
+
     try {
-        const { name, email, password } = req.body;
+        const existingUser = await prisma.user.findUnique({ where: { email } });
+        if (existingUser)
+            return res.status(400).json({ error: "Email already in use" });
 
-        if (!name || !email || !password) {
-            res.status(400).json({
-                error: "Name, email, and password are required.",
-            });
-            return;
-        }
-        const result = await authService.registerUser(name, email, password);
-        const { user, token } = result;
-        res.status(201).json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            token,
+        const passwordHash = await bcrypt.hash(password, 10);
+        const user = await prisma.user.create({
+            data: { name, email, passwordHash },
         });
-    } catch (err: any) {
-        console.error("Register Error:", err.message);
-        res.status(400).json({ error: err.message });
+
+        const token = generateToken(user.id);
+        res.json({ token, user });
+    } catch (error) {
+        res.status(500).json({ error: "Resgistration failed" });
     }
 };
 
-export const loginController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        res.status(400).json({
-            error: "Wrong email or password.",
-        });
-        return;
-    }
-
     try {
-        const result = await authService.loginUser(email, req.body.password);
-        const { user, token } = result;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) return res.status(400).json({ error: "Invalid email" });
 
-        res.status(200).json({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            token,
-        });
-    } catch (err: any) {
-        res.status(401).json({ error: err.message });
-    }
-};
+        const isValid = await bcrypt.compare(password, user.passwordHash);
+        if (!isValid)
+            return res.status(400).json({ error: "Invalid password" });
 
-export const getMeController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
-    try {
-        if (!req.user) {
-            res.status(401).json({ error: "Unauthorized" });
-            return;
-        }
-        const user = await authService.getUser(req.user.id);
-        res.status(200).json(user);
-    } catch (err: any) {
-        res.status(401).json({ error: err.message });
+        const token = generateToken(user.id);
+        res.json({ token, user });
+    } catch (error) {
+        res.status(500).json({ error: "Login failed" });
     }
 };

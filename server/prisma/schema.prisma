@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// npx prisma migrate dev --name "name whatever" -- This push new changes made to your DB schema
+
+// npx prisma generate -- Generate those changes and have access to it to the client.
+
+generator client {
+  provider = "prisma-client-js"
+ 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+
+  // Relations
+  transactions Transaction[]
+  budgets      Budget[]
+  goals        Goal[]
+}
+
+
+model Transaction {
+  id        String   @id @default(uuid())
+  amount    Float
+  type      TransactionType
+  category  String
+  date      DateTime @default(now())
+  note      String?
+
+  // Foreign key
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Budget {
+  id         String   @id @default(uuid())
+  category   String
+  limit      Float
+  startDate  DateTime
+  endDate    DateTime
+  createdAt  DateTime @default(now())
+
+  // Foreign key
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Goal {
+  id         String   @id @default(uuid())
+  title      String
+  target     Float
+  progress   Float     @default(0)
+  deadline   DateTime?
+  createdAt  DateTime  @default(now())
+
+  // Foreign key
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
